@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://b01ict1hfluwg"]
+
+[ext_resource type="Script" uid="uid://b6ayn41aglv62" path="res://scripts/display/TagDisplay.cs" id="1_5gup0"]
+
+[node name="TagDisplay" type="PanelContainer" node_paths=PackedStringArray("TagNameLabel")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5gup0")
+TagNameLabel = NodePath("TagName")
+
+[node name="TagName" type="Label" parent="."]
+layout_mode = 2

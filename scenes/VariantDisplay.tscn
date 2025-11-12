@@ -1,0 +1,46 @@
+[gd_scene load_steps=2 format=3 uid="uid://6oj7ail07oed"]
+
+[ext_resource type="Script" uid="uid://by338rql8vch5" path="res://scripts/display/VariantDisplay.cs" id="1_c78pq"]
+
+[node name="VariantInfo" type="ScrollContainer" node_paths=PackedStringArray("VariantNameLabel", "RecipeDescription", "VariantDescription")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -432.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_c78pq")
+VariantNameLabel = NodePath("VBoxContainer/VariantNameLabel")
+RecipeDescription = NodePath("VBoxContainer/RecipeDescription")
+VariantDescription = NodePath("VBoxContainer/VariantDescriptiion")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="VariantNameLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="IngredientTitleLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Zutaten:"
+
+[node name="IngredienListContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="DescriptionLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Beschreibung:"
+
+[node name="RecipeDescription" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="VariantDescriptionLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Anmerkungen zur Variante:"
+
+[node name="VariantDescriptiion" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
