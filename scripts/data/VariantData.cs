@@ -1,17 +1,23 @@
 using Godot;
 using System;
 
+[GlobalClass]
 public partial class VariantData : Resource
 {
-    public string variant_name;
-    public IngredientData[] ingredients;
-    public string variant_description;
+    [Export] public string variantName;
+    [Export] public string variantDescription;
+    [Export] public IngredientData[] ingredients;
 
-    public VariantData(string variant_name = "", IngredientData[] ingredients = [], string variant_description = "")
+    public VariantData(string variantName, IngredientData[] ingredients, string variantDescription)
     {
-        this.variant_name = variant_name;
+        this.variantName = variantName;
         this.ingredients = ingredients;
-        this.variant_description = variant_description;
+        this.variantDescription = variantDescription;
+    }
+
+    public VariantData()
+    {
+
     }
 }
 

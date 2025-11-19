@@ -1,22 +1,27 @@
 using Godot;
 using System;
 
+[GlobalClass]
 public partial class IngredientData : Resource
 {
-    [Export] public string ingredient_name;
+    [Export] public string ingredientName;
 
-    [Export] public double base_quantity;
+    [Export] public double baseQuantity;
 
-    [Export] GlobalTypes.Unit unit;
+    [Export] public GlobalTypes.Unit unit;
 
 
-    public IngredientData(string ingredient_name = "", double base_quantity = 0.0, GlobalTypes.Unit unit = GlobalTypes.Unit.NONE)
+    public IngredientData(string ingredientName, double baseQuantity, GlobalTypes.Unit unit)
     {
-        this.ingredient_name = ingredient_name;
-        this.base_quantity = base_quantity;
+        this.ingredientName = ingredientName;
+        this.baseQuantity = baseQuantity;
         this.unit = unit;
+    }
+
+    public IngredientData()
+    {
 
     }
-    
-    
+
+
 }

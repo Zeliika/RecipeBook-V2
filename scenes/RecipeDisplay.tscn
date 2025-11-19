@@ -1,21 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://cqpd148u0ridy"]
+[gd_scene load_steps=5 format=3 uid="uid://cqpd148u0ridy"]
 
 [ext_resource type="Script" uid="uid://djblrnmke2mfg" path="res://scripts/display/RecipeDisplay.cs" id="1_octap"]
 [ext_resource type="Texture2D" uid="uid://celv8cp47hl6y" path="res://ui/return_icon_154912-793594344.png" id="2_o52y6"]
-[ext_resource type="Texture2D" uid="uid://cvribtsv87kxs" path="res://ui/OIP-275475861.jpeg" id="3_x255x"]
+[ext_resource type="Texture2D" uid="uid://be6lxtdgpxdg0" path="res://ui/icons.svg" id="3_o52y6"]
 
-[node name="RecipeDisplay" type="VBoxContainer" node_paths=PackedStringArray("RecipeNameLabel", "TagContainer", "OptionsButton")]
+[sub_resource type="AtlasTexture" id="AtlasTexture_x255x"]
+atlas = ExtResource("3_o52y6")
+region = Rect2(64, 0, 64, 64)
+
+[node name="RecipeDisplay" type="VBoxContainer" node_paths=PackedStringArray("RecipeNameLabel", "TagContainer", "OptionsButton", "VariantContainer")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -432.0
-offset_bottom = 72.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
 script = ExtResource("1_octap")
 RecipeNameLabel = NodePath("TitleBar/RecipeNameLabel")
 TagContainer = NodePath("TagContainer")
 OptionsButton = NodePath("TitleBar/OptionsButton")
+VariantContainer = NodePath("VariantTabs")
 
 [node name="TitleBar" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -36,7 +40,7 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 size_flags_horizontal = 8
-icon = ExtResource("3_x255x")
+icon = SubResource("AtlasTexture_x255x")
 icon_alignment = 2
 expand_icon = true
 switch_on_hover = true
@@ -53,6 +57,7 @@ layout_mode = 2
 
 [node name="VariantTabs" type="TabContainer" parent="."]
 layout_mode = 2
+size_flags_vertical = 3
 
 [connection signal="pressed" from="TitleBar/ReturnToMenuButton" to="." method="ReturnToMenuButton"]
 [connection signal="about_to_popup" from="TitleBar/OptionsButton" to="." method="ShowOptionsButton"]

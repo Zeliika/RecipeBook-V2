@@ -3,25 +3,25 @@ using System;
 
 public partial class IngredientDisplay : HBoxContainer
 {
-    [Export] protected LineEdit QuantityTextField;
+    [Export] public LineEdit QuantityTextField;
 
-    [Export] protected Label UnitLabel;
+    [Export] public Label UnitLabel;
 
-    [Export] protected Label IngredientLabel;
+    [Export] public Label IngredientLabel;
 
-    [Export] protected PanelContainer Placeholder;
+    [Export] public PanelContainer Placeholder;
 
     public override void _Ready()
     {
         
     }
-    public void Init(string ingredient_name = "", double base_quantity = 0.0, GlobalTypes.Unit unit = GlobalTypes.Unit.NONE)
+    public void Init(IngredientData ingredientData)
     {
-        QuantityTextField.Text = base_quantity.ToString();
-        QuantityTextField.Visible = base_quantity > 0;
-        Placeholder.Visible = base_quantity <= 0;
-        UnitLabel.Text = GlobalTypes.UnitLabels[unit];
-        IngredientLabel.Text = ingredient_name;
+        QuantityTextField.Text = ingredientData.baseQuantity.ToString();
+        QuantityTextField.Visible = ingredientData.baseQuantity > 0;
+        Placeholder.Visible = ingredientData.baseQuantity <= 0;
+        UnitLabel.Text = GlobalTypes.UnitLabels[ingredientData.unit];
+        IngredientLabel.Text = ingredientData.ingredientName;
     }
 
 

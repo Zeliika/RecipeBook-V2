@@ -11,9 +11,14 @@ config_version=5
 [application]
 
 config/name="Rezeptbuch 2.0"
+run/main_scene="uid://cqpd148u0ridy"
 config/features=PackedStringArray("4.4", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
 [dotnet]
 
 project/assembly_name="Rezeptbuch 2.0"
+
+[gui]
+
+theme/custom="uid://bts41ngpaub6b"
