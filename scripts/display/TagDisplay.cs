@@ -5,9 +5,9 @@ public partial class TagDisplay : Control
 {
     [Export] public Label TagNameLabel;
 
-    public void Init(string tag_name)
+    public void Init(string TagName)
     {
-        TagNameLabel.Text = tag_name;
+        TagNameLabel.Text = TagName;
     }
 
 

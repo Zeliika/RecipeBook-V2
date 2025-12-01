@@ -3,18 +3,16 @@
 [ext_resource type="Script" uid="uid://cj854rck3r0lf" path="res://scripts/display/RecipePreview.cs" id="1_7hkim"]
 [ext_resource type="Texture2D" uid="uid://ch2cm7qeivw3m" path="res://ui/PlaceHolderImage.tres" id="2_hjx2m"]
 
-[node name="RecipePreview" type="Button"]
+[node name="RecipePreview" type="Button" node_paths=PackedStringArray("RecipeNamePreview", "TagPreviewContainer")]
 custom_minimum_size = Vector2(0, 150)
-anchors_preset = 14
-anchor_top = 0.5
+anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 0.5
-offset_top = -4.0
-offset_bottom = 4.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_7hkim")
-PlaceHolderImage = ExtResource("2_hjx2m")
+RecipeNamePreview = NodePath("HBoxContainer/VBoxContainer/RecipeNamePreview")
+TagPreviewContainer = NodePath("HBoxContainer/VBoxContainer/TagPreviewContainer")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -31,6 +29,7 @@ layout_mode = 2
 [node name="RecipeTexture" type="TextureRect" parent="HBoxContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+texture = ExtResource("2_hjx2m")
 expand_mode = 2
 stretch_mode = 5
 

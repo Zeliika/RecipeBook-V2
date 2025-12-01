@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://cjc7o8w424mm5"]
+
+[ext_resource type="Script" uid="uid://dgbae40ok6urq" path="res://scripts/display/SelectedTagDisplay.cs" id="1_6qb8a"]
+
+[node name="SelectedTagDisplay" type="PanelContainer" node_paths=PackedStringArray("SelectedTagName", "RemoveTagButton")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6qb8a")
+SelectedTagName = NodePath("HBoxContainer/SelectedTagName")
+RemoveTagButton = NodePath("HBoxContainer/RemoveTagButton")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="RemoveTagButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+text = "X"
+
+[node name="SelectedTagName" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="pressed" from="HBoxContainer/RemoveTagButton" to="." method="RemoveSelectedTag"]

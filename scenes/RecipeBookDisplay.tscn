@@ -1,0 +1,90 @@
+[gd_scene load_steps=6 format=3 uid="uid://cdfqswcstugay"]
+
+[ext_resource type="Script" uid="uid://dvp56x84xqnkt" path="res://scripts/display/RecipeBookDisplay.cs" id="1_wc0ev"]
+[ext_resource type="Texture2D" uid="uid://bj7uc7vtd51lv" path="res://ui/icon_atlas.tres" id="2_4i4sw"]
+[ext_resource type="Resource" uid="uid://oeh620wawwfb" path="res://test/test_recipe_book.tres" id="2_lkbbl"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lkbbl"]
+atlas = ExtResource("2_4i4sw")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dywo5"]
+atlas = ExtResource("2_4i4sw")
+
+[node name="RecipeBookDisplay" type="Control" node_paths=PackedStringArray("TextSearchField", "RecipeList", "ClearSeachButton", "OptionsMenuButton", "TagSelector", "SelectedTagsContainer")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_wc0ev")
+TextSearchField = NodePath("VSplitContainer/SearchBar/TextSearchField")
+RecipeList = NodePath("VSplitContainer/ScrollContainer/RecipeList")
+ClearSeachButton = NodePath("VSplitContainer/SearchBar/ClearSearchButton")
+OptionsMenuButton = NodePath("VSplitContainer/SearchBar/OptionsMenuButton")
+TagSelector = NodePath("VSplitContainer/SearchBar/TagSelector")
+SelectedTagsContainer = NodePath("VSplitContainer/SelectedTagsContainer")
+recipeBookData = ExtResource("2_lkbbl")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VSplitContainer" type="VSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SearchBar" type="HBoxContainer" parent="VSplitContainer"]
+layout_mode = 2
+
+[node name="TextSearchField" type="LineEdit" parent="VSplitContainer/SearchBar"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TagSelector" type="MenuButton" parent="VSplitContainer/SearchBar"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Tags ⌄"
+
+[node name="ClearSearchButton" type="Button" parent="VSplitContainer/SearchBar"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+icon = SubResource("AtlasTexture_lkbbl")
+
+[node name="OptionsMenuButton" type="MenuButton" parent="VSplitContainer/SearchBar"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+icon = SubResource("AtlasTexture_dywo5")
+icon_alignment = 2
+item_count = 2
+popup/item_0/text = "Add"
+popup/item_0/id = 0
+popup/item_1/text = "Select"
+popup/item_1/id = 1
+
+[node name="SelectedTagsContainer" type="HFlowContainer" parent="VSplitContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VSplitContainer"]
+layout_mode = 2
+
+[node name="RecipeList" type="VBoxContainer" parent="VSplitContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[connection signal="text_submitted" from="VSplitContainer/SearchBar/TextSearchField" to="." method="StartSearch"]
+[connection signal="pressed" from="VSplitContainer/SearchBar/ClearSearchButton" to="." method="ClearSearch"]
