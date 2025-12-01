@@ -1,83 +1,83 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=14 format=3 uid="uid://bip42grtxnc75"]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=14 format=3 uid="uid://rsp584a60lvg"]
 
-[ext_resource type="Script" uid="uid://bwfrfm88x651y" path="res://scripts/data/RecipeData.cs" id="1_5fau2"]
-[ext_resource type="Script" uid="uid://cfvxyix8nk30b" path="res://scripts/data/IngredientData.cs" id="2_5bevy"]
-[ext_resource type="Script" uid="uid://bqw8h25xxib65" path="res://scripts/data/VariantData.cs" id="2_jjx85"]
+[ext_resource type="Script" uid="uid://bwfrfm88x651y" path="res://scripts/data/RecipeData.cs" id="1_ri8sk"]
+[ext_resource type="Script" uid="uid://cfvxyix8nk30b" path="res://scripts/data/IngredientData.cs" id="2_ehfmg"]
+[ext_resource type="Script" uid="uid://bqw8h25xxib65" path="res://scripts/data/VariantData.cs" id="3_v8kag"]
 
 [sub_resource type="Resource" id="Resource_3cfj1"]
-script = ExtResource("2_5bevy")
+script = ExtResource("2_ehfmg")
 ingredientName = "Zutat 1"
 baseQuantity = 3.0
 unit = 0
 metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_cdn1d"]
-script = ExtResource("2_5bevy")
+script = ExtResource("2_ehfmg")
 ingredientName = "Zutat 2"
 baseQuantity = 1.0
 unit = 5
 metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_l7j7m"]
-script = ExtResource("2_5bevy")
+script = ExtResource("2_ehfmg")
 ingredientName = "Zutat 3"
 baseQuantity = 500.0
 unit = 2
 metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_kad6l"]
-script = ExtResource("2_5bevy")
+script = ExtResource("2_ehfmg")
 ingredientName = "Zutat 4"
 baseQuantity = 200.0
 unit = 1
 metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_2o6uk"]
-script = ExtResource("2_5bevy")
+script = ExtResource("2_ehfmg")
 ingredientName = "Zutat 5"
 baseQuantity = 0.0
 unit = 0
 metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_5bevy"]
-script = ExtResource("2_jjx85")
-variantName = "Variante 1"
+script = ExtResource("3_v8kag")
+variantName = "Variante 8"
 variantDescription = "Text Variante 1"
 ingredients = Array[Object]([SubResource("Resource_3cfj1"), SubResource("Resource_cdn1d"), SubResource("Resource_l7j7m"), SubResource("Resource_kad6l"), SubResource("Resource_2o6uk")])
 metadata/_custom_type_script = "uid://bqw8h25xxib65"
 
 [sub_resource type="Resource" id="Resource_3a8pa"]
-script = ExtResource("2_5bevy")
+script = ExtResource("2_ehfmg")
 ingredientName = "Zutat 1"
 baseQuantity = 0.0
 unit = 2
 metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_uaiit"]
-script = ExtResource("2_5bevy")
+script = ExtResource("2_ehfmg")
 ingredientName = "Zutat 2"
 baseQuantity = 0.0
 unit = 3
 metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_0b55v"]
-script = ExtResource("2_5bevy")
+script = ExtResource("2_ehfmg")
 ingredientName = "Zutat 3"
 baseQuantity = 0.0
 unit = 0
 metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_j8sdd"]
-script = ExtResource("2_jjx85")
+script = ExtResource("3_v8kag")
 variantName = "Variante 2"
 variantDescription = "Text Variante 2"
 ingredients = Array[Object]([SubResource("Resource_3a8pa"), SubResource("Resource_uaiit"), SubResource("Resource_0b55v")])
 metadata/_custom_type_script = "uid://bqw8h25xxib65"
 
 [resource]
-script = ExtResource("1_5fau2")
-recipeName = "Testrezept"
+script = ExtResource("1_ri8sk")
+recipeName = "Testrezept 2"
 description = "Allgemein"
-tags = Array[int]([0, 3, 5, 8])
+tags = Array[int]([9, 10, 5, 8])
 variants = Array[Resource]([SubResource("Resource_5bevy"), SubResource("Resource_j8sdd")])
 metadata/_custom_type_script = "uid://bwfrfm88x651y"
