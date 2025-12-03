@@ -6,77 +6,77 @@
 
 [sub_resource type="Resource" id="Resource_3cfj1"]
 script = ExtResource("2_5bevy")
-ingredientName = "Zutat 1"
+ingredientName = "Nudeln"
 baseQuantity = 3.0
 unit = 0
 metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_cdn1d"]
 script = ExtResource("2_5bevy")
-ingredientName = "Zutat 2"
+ingredientName = "Milch"
 baseQuantity = 1.0
 unit = 5
 metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_l7j7m"]
 script = ExtResource("2_5bevy")
-ingredientName = "Zutat 3"
+ingredientName = "Käse"
 baseQuantity = 500.0
 unit = 2
 metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_kad6l"]
 script = ExtResource("2_5bevy")
-ingredientName = "Zutat 4"
+ingredientName = "Muskatnuss"
 baseQuantity = 200.0
 unit = 1
 metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_2o6uk"]
 script = ExtResource("2_5bevy")
-ingredientName = "Zutat 5"
+ingredientName = "Mehl"
 baseQuantity = 0.0
 unit = 0
 metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_5bevy"]
 script = ExtResource("2_jjx85")
-variantName = "Variante 1"
+variantName = "Käsesoße"
 variantDescription = "Text Variante 1"
 ingredients = Array[Object]([SubResource("Resource_3cfj1"), SubResource("Resource_cdn1d"), SubResource("Resource_l7j7m"), SubResource("Resource_kad6l"), SubResource("Resource_2o6uk")])
 metadata/_custom_type_script = "uid://bqw8h25xxib65"
 
 [sub_resource type="Resource" id="Resource_3a8pa"]
 script = ExtResource("2_5bevy")
-ingredientName = "Zutat 1"
+ingredientName = "Nudeln"
 baseQuantity = 0.0
 unit = 2
 metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_uaiit"]
 script = ExtResource("2_5bevy")
-ingredientName = "Zutat 2"
+ingredientName = "Tomaten"
 baseQuantity = 0.0
 unit = 3
 metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_0b55v"]
 script = ExtResource("2_5bevy")
-ingredientName = "Zutat 3"
+ingredientName = "Zwiebeln"
 baseQuantity = 0.0
 unit = 0
 metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_j8sdd"]
 script = ExtResource("2_jjx85")
-variantName = "Variante 2"
+variantName = "Tomatensoße"
 variantDescription = "Text Variante 2"
 ingredients = Array[Object]([SubResource("Resource_3a8pa"), SubResource("Resource_uaiit"), SubResource("Resource_0b55v")])
 metadata/_custom_type_script = "uid://bqw8h25xxib65"
 
 [resource]
 script = ExtResource("1_5fau2")
-recipeName = "Testrezept"
+recipeName = "Nudeln mit Soße"
 description = "Allgemein"
 tags = Array[int]([0, 3, 5, 8])
 variants = Array[Resource]([SubResource("Resource_5bevy"), SubResource("Resource_j8sdd")])

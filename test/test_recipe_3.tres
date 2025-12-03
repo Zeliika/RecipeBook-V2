@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=8 format=3 uid="uid://3agf2yb7quo0"]
+
+[ext_resource type="Script" uid="uid://bwfrfm88x651y" path="res://scripts/data/RecipeData.cs" id="1_gjmqe"]
+[ext_resource type="Script" uid="uid://cfvxyix8nk30b" path="res://scripts/data/IngredientData.cs" id="2_vifyd"]
+[ext_resource type="Script" uid="uid://bqw8h25xxib65" path="res://scripts/data/VariantData.cs" id="3_x3qx7"]
+
+[sub_resource type="Resource" id="Resource_kjaj7"]
+script = ExtResource("2_vifyd")
+ingredientName = "Pizzateig"
+baseQuantity = 0.0
+unit = 0
+metadata/_custom_type_script = "uid://cfvxyix8nk30b"
+
+[sub_resource type="Resource" id="Resource_6a3ln"]
+script = ExtResource("2_vifyd")
+ingredientName = "Tomatensoße"
+baseQuantity = 0.0
+unit = 0
+metadata/_custom_type_script = "uid://cfvxyix8nk30b"
+
+[sub_resource type="Resource" id="Resource_yj264"]
+script = ExtResource("2_vifyd")
+ingredientName = "Käse"
+baseQuantity = 0.0
+unit = 0
+metadata/_custom_type_script = "uid://cfvxyix8nk30b"
+
+[sub_resource type="Resource" id="Resource_dbp07"]
+script = ExtResource("3_x3qx7")
+variantName = ""
+variantDescription = ""
+ingredients = Array[Object]([SubResource("Resource_kjaj7"), SubResource("Resource_6a3ln"), SubResource("Resource_yj264")])
+metadata/_custom_type_script = "uid://bqw8h25xxib65"
+
+[resource]
+script = ExtResource("1_gjmqe")
+recipeName = "4-Käse-Pizza"
+description = ""
+tags = Array[int]([11, 2])
+variants = Array[Object]([SubResource("Resource_dbp07")])
+metadata/_custom_type_script = "uid://bwfrfm88x651y"

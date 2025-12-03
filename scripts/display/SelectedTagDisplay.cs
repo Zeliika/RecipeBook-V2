@@ -7,7 +7,7 @@ public partial class SelectedTagDisplay : PanelContainer
     [Export] public Button RemoveTagButton;
 
     [Signal]
-    public delegate void OnTagRemovedEventHandler(int id);
+    public delegate void OnTagRemovedEventHandler();
 
     public void Init(string TagName)
     {
@@ -16,7 +16,7 @@ public partial class SelectedTagDisplay : PanelContainer
 
     public void RemoveSelectedTag()
     {
-        EmitSignal(nameof(OnTagRemoved), GetIndex()); 
+        EmitSignal(nameof(OnTagRemoved)); 
         Visible = false;
     }
 }

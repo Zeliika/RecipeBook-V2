@@ -37,7 +37,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VSplitContainer" type="VSplitContainer" parent="."]
+[node name="VSplitContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -47,6 +47,7 @@ grow_vertical = 2
 
 [node name="SearchBar" type="HBoxContainer" parent="VSplitContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="TextSearchField" type="LineEdit" parent="VSplitContainer/SearchBar"]
 custom_minimum_size = Vector2(200, 0)
@@ -77,14 +78,16 @@ popup/item_1/id = 1
 
 [node name="SelectedTagsContainer" type="HFlowContainer" parent="VSplitContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VSplitContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="RecipeList" type="VBoxContainer" parent="VSplitContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[connection signal="text_submitted" from="VSplitContainer/SearchBar/TextSearchField" to="." method="StartSearch"]
+[connection signal="text_submitted" from="VSplitContainer/SearchBar/TextSearchField" to="." method="StartSearch" unbinds=1]
 [connection signal="pressed" from="VSplitContainer/SearchBar/ClearSearchButton" to="." method="ClearSearch"]

@@ -8,9 +8,10 @@ public partial class RecipePreview : Button
     [Export] public HFlowContainer TagPreviewContainer;
     public PackedScene TagDisplayScene = GD.Load<PackedScene>("uid://b01ict1hfluwg");
 
-
+    public RecipeData recipeData;
     public void Init(RecipeData recipeData)
     {
+        this.recipeData = recipeData;
         //PlaceHolderImage.Texture = recipeData.texture;
         RecipeNamePreview.Text = recipeData.recipeName;
         foreach (GlobalTypes.Tag tag in recipeData.tags)

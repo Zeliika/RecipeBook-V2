@@ -1,10 +1,11 @@
-[gd_resource type="Resource" script_class="RecipeBookData" load_steps=4 format=3 uid="uid://oeh620wawwfb"]
+[gd_resource type="Resource" script_class="RecipeBookData" load_steps=5 format=3 uid="uid://oeh620wawwfb"]
 
 [ext_resource type="Resource" uid="uid://bip42grtxnc75" path="res://test/test_recipe_1.tres" id="1_ibdyo"]
 [ext_resource type="Script" uid="uid://dhe76ro1v25fh" path="res://scripts/data/RecipeBookData.cs" id="1_ot1fy"]
 [ext_resource type="Resource" uid="uid://rsp584a60lvg" path="res://test/test_recipe_2.tres" id="2_kgpx2"]
+[ext_resource type="Resource" uid="uid://3agf2yb7quo0" path="res://test/test_recipe_3.tres" id="3_kgpx2"]
 
 [resource]
 script = ExtResource("1_ot1fy")
-recipeData = Array[Object]([ExtResource("1_ibdyo"), ExtResource("2_kgpx2")])
+recipeData = Array[Object]([ExtResource("1_ibdyo"), ExtResource("2_kgpx2"), ExtResource("3_kgpx2")])
 metadata/_custom_type_script = "uid://dhe76ro1v25fh"
