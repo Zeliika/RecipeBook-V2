@@ -9,6 +9,14 @@ public partial class RecipePreview : Button
     public PackedScene TagDisplayScene = GD.Load<PackedScene>("uid://b01ict1hfluwg");
 
     public RecipeData recipeData;
+    protected EventBus eventBus;
+
+
+    public override void _Ready()
+    {
+        eventBus = GetNode<EventBus>("/root/EventBus");
+    }
+    
     public void Init(RecipeData recipeData)
     {
         this.recipeData = recipeData;
@@ -20,5 +28,11 @@ public partial class RecipePreview : Button
             TagPreviewContainer.AddChild(display);
             display.Init(GlobalTypes.Tags[tag]);
         }
+    }
+
+
+    public void OnRecipePressed()
+    {
+        eventBus.EmitSignal(EventBus.SignalName.RecipeOpened, recipeData);
     }
 }

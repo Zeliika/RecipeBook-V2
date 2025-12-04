@@ -4,9 +4,8 @@
 [ext_resource type="Texture2D" uid="uid://bj7uc7vtd51lv" path="res://ui/icon_atlas.tres" id="2_4i4sw"]
 [ext_resource type="Resource" uid="uid://oeh620wawwfb" path="res://test/test_recipe_book.tres" id="2_lkbbl"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_lkbbl"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_4i4sw"]
 atlas = ExtResource("2_4i4sw")
-region = Rect2(0, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dywo5"]
 atlas = ExtResource("2_4i4sw")
@@ -63,7 +62,7 @@ text = "Tags ⌄"
 [node name="ClearSearchButton" type="Button" parent="VSplitContainer/SearchBar"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-icon = SubResource("AtlasTexture_lkbbl")
+icon = SubResource("AtlasTexture_4i4sw")
 
 [node name="OptionsMenuButton" type="MenuButton" parent="VSplitContainer/SearchBar"]
 custom_minimum_size = Vector2(50, 50)

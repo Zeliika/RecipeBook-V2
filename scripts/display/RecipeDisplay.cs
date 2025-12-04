@@ -8,15 +8,18 @@ public partial class RecipeDisplay : Control
     [Export] MenuButton OptionsButton;
     [Export] TabContainer VariantContainer;
 
-    private RecipeData recipeData; // TESTING just for testing remove later
+    [Export] Button CloseRecipeButton;
+
+    public RecipeData recipeData; // TESTING just for testing remove later
     public PackedScene IngredientDisplayScene = GD.Load<PackedScene>("uid://ckghx552h32nh");
     public PackedScene TagDisplayScene = GD.Load<PackedScene>("uid://b01ict1hfluwg");
     public PackedScene VariantDisplayScene = GD.Load<PackedScene>("uid://6oj7ail07oed");
 
-
+    protected EventBus eventBus;
     public override void _Ready()
     {
         OptionsButton.GetPopup().Connect("id_pressed", new Callable(this, MethodName.OnItemSelected));
+        eventBus = GetNode<EventBus>("/root/EventBus");
         // Init(recipeData); //TESTING remove when recipe book implemented
     }
 
@@ -44,9 +47,9 @@ public partial class RecipeDisplay : Control
 
 
 
-    protected void ReturnToMenuButton()
+    protected void OnCloseRecipeButtonPressed()
     {
-        GD.Print("Button pressed");
+        eventBus.EmitSignal(EventBus.SignalName.RecipeClosed);
     }
 
     protected void OnItemSelected(int id)

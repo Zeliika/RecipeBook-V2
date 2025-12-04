@@ -43,3 +43,5 @@ layout_mode = 2
 [node name="TagPreviewContainer" type="HFlowContainer" parent="HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[connection signal="pressed" from="." to="." method="OnRecipePressed"]

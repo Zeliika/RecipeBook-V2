@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://b5ceq47qgv3wb"]
+
+[ext_resource type="Script" uid="uid://b6hj5qki55no6" path="res://scripts/display/App.cs" id="1_mkjoj"]
+[ext_resource type="PackedScene" uid="uid://cdfqswcstugay" path="res://scenes/RecipeBookDisplay.tscn" id="1_ouktq"]
+
+[node name="App" type="VSplitContainer" node_paths=PackedStringArray("TabContentContainer", "TabHeaderContainer")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mkjoj")
+TabContentContainer = NodePath("TabContentContainer")
+TabHeaderContainer = NodePath("TabHeaderContainer")
+
+[node name="TabContentContainer" type="TabContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+current_tab = 0
+tabs_visible = false
+
+[node name="RecipeBookDisplay" parent="TabContentContainer" instance=ExtResource("1_ouktq")]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="TabHeaderContainer" type="TabBar" parent="."]
+layout_mode = 2
+size_flags_vertical = 8
+current_tab = 0
+tab_count = 1
+tab_0/title = "Rezeptbuch"
+
+[connection signal="tab_clicked" from="TabHeaderContainer" to="." method="OnTabSelected"]

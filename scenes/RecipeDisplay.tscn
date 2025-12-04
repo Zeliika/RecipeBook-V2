@@ -1,14 +1,20 @@
-[gd_scene load_steps=5 format=3 uid="uid://cqpd148u0ridy"]
+[gd_scene load_steps=6 format=3 uid="uid://cqpd148u0ridy"]
 
 [ext_resource type="Script" uid="uid://djblrnmke2mfg" path="res://scripts/display/RecipeDisplay.cs" id="1_octap"]
-[ext_resource type="Texture2D" uid="uid://celv8cp47hl6y" path="res://ui/return_icon_154912-793594344.png" id="2_o52y6"]
 [ext_resource type="Texture2D" uid="uid://be6lxtdgpxdg0" path="res://ui/icons.svg" id="3_o52y6"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xjr4p"]
+atlas = ExtResource("3_o52y6")
+region = Rect2(0, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_61dnk"]
+atlas = SubResource("AtlasTexture_xjr4p")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_x255x"]
 atlas = ExtResource("3_o52y6")
 region = Rect2(64, 0, 64, 64)
 
-[node name="RecipeDisplay" type="VBoxContainer" node_paths=PackedStringArray("RecipeNameLabel", "TagContainer", "OptionsButton", "VariantContainer")]
+[node name="RecipeDisplay" type="VBoxContainer" node_paths=PackedStringArray("RecipeNameLabel", "TagContainer", "OptionsButton", "VariantContainer", "CloseRecipeButton")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -20,14 +26,15 @@ RecipeNameLabel = NodePath("TitleBar/RecipeNameLabel")
 TagContainer = NodePath("TagContainer")
 OptionsButton = NodePath("TitleBar/OptionsButton")
 VariantContainer = NodePath("VariantTabs")
+CloseRecipeButton = NodePath("TitleBar/CloseRecipeButton")
 
 [node name="TitleBar" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="ReturnToMenuButton" type="Button" parent="TitleBar"]
+[node name="CloseRecipeButton" type="Button" parent="TitleBar"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-icon = ExtResource("2_o52y6")
+icon = SubResource("AtlasTexture_61dnk")
 expand_icon = true
 
 [node name="RecipeNameLabel" type="Label" parent="TitleBar"]
@@ -59,5 +66,5 @@ layout_mode = 2
 layout_mode = 2
 size_flags_vertical = 3
 
-[connection signal="pressed" from="TitleBar/ReturnToMenuButton" to="." method="ReturnToMenuButton"]
+[connection signal="pressed" from="TitleBar/CloseRecipeButton" to="." method="OnCloseRecipeButtonPressed"]
 [connection signal="about_to_popup" from="TitleBar/OptionsButton" to="." method="ShowOptionsButton"]
