@@ -9,10 +9,11 @@ public partial class VariantDisplay : Control
 
     public PackedScene IngredientDisplayScene = GD.Load<PackedScene>("uid://ckghx552h32nh");
 
-
+    protected VariantData variantData;
 
     public void Init(VariantData variantData, string recipeDescription)
     {
+        this.variantData = variantData;
         Name = variantData.variantName;
         RecipeDescription.Text = recipeDescription;
         VariantDescription.Text = variantData.variantDescription;

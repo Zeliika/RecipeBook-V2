@@ -8,12 +8,12 @@ public partial class RecipeData : Resource
     [Export] public string description;
     [Export] public Texture2D texture;
     [Export] public Godot.Collections.Array<GlobalTypes.Tag> tags;
-    [Export] public VariantData[] variants;
+    [Export] public Godot.Collections.Array<VariantData> variants;
 
 
 
 
-    public RecipeData(string recipeName, VariantData[] variants, Godot.Collections.Array<GlobalTypes.Tag> tags, string description)
+    public RecipeData(string recipeName, Godot.Collections.Array<VariantData> variants, Godot.Collections.Array<GlobalTypes.Tag> tags, string description)
     {
         this.recipeName = recipeName;
         this.tags = tags;

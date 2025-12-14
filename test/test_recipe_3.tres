@@ -27,7 +27,7 @@ metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 
 [sub_resource type="Resource" id="Resource_dbp07"]
 script = ExtResource("3_x3qx7")
-variantName = ""
+variantName = "4-Käse-Pizza"
 variantDescription = ""
 ingredients = Array[Object]([SubResource("Resource_kjaj7"), SubResource("Resource_6a3ln"), SubResource("Resource_yj264")])
 metadata/_custom_type_script = "uid://bqw8h25xxib65"

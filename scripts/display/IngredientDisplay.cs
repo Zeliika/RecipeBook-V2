@@ -34,4 +34,5 @@ public partial class IngredientDisplay : HBoxContainer
     {
         return QuantityTextField;
     }
+    
 }

@@ -8,14 +8,12 @@ public partial class RecipeBookDisplay : Control
     [Export] VBoxContainer RecipeList;
     [Export] Button ClearSeachButton;
     [Export] MenuButton OptionsMenuButton;
-
     [Export] MenuButton TagSelector;
     [Export] HFlowContainer SelectedTagsContainer;
-    [Export] public RecipeBookData recipeBookData; // TESTING just for testing remove later
-
-    public HashSet<GlobalTypes.Tag> TagSelection = new HashSet<GlobalTypes.Tag>{};
-    public PackedScene RecipePreviewScene = GD.Load<PackedScene>("uid://w1aq4pvqbg8d");
-    public PackedScene SelectedTagScene = GD.Load<PackedScene>("uid://cjc7o8w424mm5");
+    public RecipeBookData recipeBookData;
+    protected HashSet<GlobalTypes.Tag> TagSelection = new HashSet<GlobalTypes.Tag>{};
+    protected PackedScene RecipePreviewScene = GD.Load<PackedScene>("uid://w1aq4pvqbg8d");
+    protected PackedScene SelectedTagScene = GD.Load<PackedScene>("uid://cjc7o8w424mm5");
 
 
 
@@ -31,12 +29,12 @@ public partial class RecipeBookDisplay : Control
             SelectedTagsContainer.AddChild(selection);
             selection.Init(GlobalTypes.Tags[tag]);
             selection.Visible = false;
-            // selection.Connect("OnTagRemoved", new Callable(this, MethodName.OnTagRemovedSignalReceived));
             selection.Connect("OnTagRemoved", Callable.From(()=>OnTagRemovedSignalReceived((int) tag)));
         }
         TagSelector.GetPopup().Connect("id_pressed", new Callable(this, MethodName.OnTagSelected));
 
-        Init(recipeBookData); // TESTING just for testing
+        RecipeBookData recipeBook = (RecipeBookData)ResourceLoader.Load("C:\\Users\\zelii\\Desktop\\test2.rb"); //TODO get path from file dialog
+        Init(recipeBook);
 
     }
 
@@ -61,6 +59,10 @@ public partial class RecipeBookDisplay : Control
 
             case 1:
                 GD.Print("Select");
+                break;
+
+            case 2:
+                ResourceSaver.Save(recipeBookData, "C:\\Users\\zelii\\Desktop\\test2.rb"); // TODO use file dialog to get path
                 break;
             default:
                 return;
@@ -107,7 +109,7 @@ public partial class RecipeBookDisplay : Control
         {
             recipe.Visible = true;
         }
-        
+
     }
 
     protected string ProcessString(string input)
@@ -119,7 +121,7 @@ public partial class RecipeBookDisplay : Control
     {
         foreach (RecipePreview recipe in RecipeList.GetChildren())
         {
-            RecipeData recipeData = recipe.recipeData;            
+            RecipeData recipeData = recipe.recipeData;
             recipe.Visible = SearchRecipes(recipeData, ProcessString(TextSearchField.Text));
         }
 
@@ -154,6 +156,6 @@ public partial class RecipeBookDisplay : Control
         return false;
     }
 
-   
+
 
 }

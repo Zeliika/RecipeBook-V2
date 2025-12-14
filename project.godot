@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="Rezeptbuch 2.0"
-run/main_scene="uid://cqpd148u0ridy"
+run/main_scene="uid://b5ceq47qgv3wb"
 config/features=PackedStringArray("4.4", "C#", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+EventBus="*res://scripts/utility/EventBus.cs"
 
 [dotnet]
 
