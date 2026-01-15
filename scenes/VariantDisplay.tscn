@@ -1,33 +1,67 @@
-[gd_scene load_steps=2 format=3 uid="uid://6oj7ail07oed"]
+[gd_scene load_steps=6 format=3 uid="uid://6oj7ail07oed"]
 
 [ext_resource type="Script" uid="uid://by338rql8vch5" path="res://scripts/display/VariantDisplay.cs" id="1_c78pq"]
+[ext_resource type="Texture2D" uid="uid://7yghwhpdeh60" path="res://ui/Test.tres" id="2_etvxq"]
 
-[node name="VariantInfo" type="ScrollContainer" node_paths=PackedStringArray("RecipeDescription", "VariantDescription", "IngredientListContainer")]
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_c78pq"]
+load_path = "res://.godot/imported/icons.svg-0ee3045dd5ac81814b7c281e8ab0aa82.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_etvxq"]
+atlas = SubResource("CompressedTexture2D_c78pq")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dypnu"]
+atlas = SubResource("AtlasTexture_etvxq")
+
+[node name="VariantInfo" type="ScrollContainer" node_paths=PackedStringArray("RecipeDescriptionLabel", "RecipeDescription", "VariantDescription", "IngredientList", "AddIngredientButton", "VariantNameEdit", "VariantDescriptionEdit")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -432.0
-offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("1_c78pq")
+RecipeDescriptionLabel = NodePath("VBoxContainer/DescriptionLabel")
 RecipeDescription = NodePath("VBoxContainer/RecipeDescription")
 VariantDescription = NodePath("VBoxContainer/VariantDescriptiion")
-IngredientListContainer = NodePath("VBoxContainer/IngredienListContainer")
+IngredientList = NodePath("VBoxContainer/IngredientList")
+AddIngredientButton = NodePath("VBoxContainer/AddIngredientButton")
+VariantNameEdit = NodePath("VBoxContainer/VariantNameEdit")
+VariantDescriptionEdit = NodePath("VBoxContainer/VariantDescriptionEdit")
+RemoveIngredient = ExtResource("2_etvxq")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="VariantNameLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="VariantNameEdit" type="TextEdit" parent="VBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="IngredientTitleLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 text = "Zutaten:"
 
-[node name="IngredienListContainer" type="VBoxContainer" parent="VBoxContainer"]
+[node name="IngredientList" type="Tree" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+columns = 3
+allow_search = false
+hide_folding = true
+hide_root = true
+auto_tooltip = false
+
+[node name="AddIngredientButton" type="Button" parent="VBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
+size_flags_vertical = 4
+icon = SubResource("AtlasTexture_dypnu")
 
 [node name="DescriptionLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
@@ -36,6 +70,7 @@ text = "Beschreibung:"
 [node name="RecipeDescription" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
+size_flags_vertical = 1
 
 [node name="VariantDescriptionLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
@@ -44,3 +79,12 @@ text = "Anmerkungen zur Variante:"
 [node name="VariantDescriptiion" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
+size_flags_vertical = 1
+
+[node name="VariantDescriptionEdit" type="TextEdit" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[connection signal="button_clicked" from="VBoxContainer/IngredientList" to="." method="OnDeleteIngredientButtonPressed"]
+[connection signal="item_edited" from="VBoxContainer/IngredientList" to="." method="OnIngredientListItemSelected"]
+[connection signal="pressed" from="VBoxContainer/AddIngredientButton" to="." method="OnAddIngredientButtonPressed"]

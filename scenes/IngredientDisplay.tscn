@@ -1,6 +1,45 @@
-[gd_scene load_steps=2 format=3 uid="uid://ckghx552h32nh"]
+[gd_scene load_steps=2 format=3 uid="uid://1rlc1aycs1vs"]
 
-[ext_resource type="Script" uid="uid://bcjg7ylm53mre" path="res://scripts/display/IngredientDisplay.cs" id="1_iktve"]
+[sub_resource type="CSharpScript" id="CSharpScript_61qt2"]
+script/source = "using Godot;
+using System;
+
+public partial class IngredientDisplay : HBoxContainer
+{
+    [Export] public LineEdit QuantityTextField;
+
+    [Export] public Label UnitLabel;
+
+    [Export] public Label IngredientLabel;
+
+    [Export] public PanelContainer Placeholder;
+
+    public override void _Ready()
+    {
+        
+    }
+    public void Init(IngredientData ingredientData)
+    {
+        QuantityTextField.Text = ingredientData.baseQuantity.ToString();
+        QuantityTextField.Visible = ingredientData.baseQuantity > 0;
+        Placeholder.Visible = ingredientData.baseQuantity <= 0;
+        UnitLabel.Text = GlobalTypes.UnitLabels[ingredientData.unit];
+        IngredientLabel.Text = ingredientData.ingredientName;
+    }
+
+
+    public void SetQuantity(float NewQuantity)
+    {
+        QuantityTextField.Text = NewQuantity.ToString();
+    }
+
+    public LineEdit GetQuantityTextField()
+    {
+        return QuantityTextField;
+    }
+    
+}
+"
 
 [node name="IngredientDisplay" type="HBoxContainer" node_paths=PackedStringArray("QuantityTextField", "UnitLabel", "IngredientLabel", "Placeholder")]
 anchors_preset = 15
@@ -8,7 +47,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_iktve")
+script = SubResource("CSharpScript_61qt2")
 QuantityTextField = NodePath("QuantitiyTextField")
 UnitLabel = NodePath("UnitLabel")
 IngredientLabel = NodePath("IngredientLabel")

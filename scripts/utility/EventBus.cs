@@ -13,9 +13,10 @@ public partial class EventBus : Node
     public delegate void RecipeClosedEventHandler();
 
     [Signal]
-    public delegate void RecipeOpenedEventHandler(RecipeData recipeData);
+    public delegate void RecipeOpenedEventHandler(RecipeData recipeData, bool editMode);
 
-    //TODO
-    //Signal RecipeOpened
-    //Signal RecipeClosed -> emitted from recipe display when x button pressed, should provide some kind of id to know which tab to close
+    [Signal]
+    public delegate void IngredientDeletedEventHandler(int index);
+    [Signal]
+    public delegate void QuantityTextFieldEditedEventHandler(bool isFloat);
 }

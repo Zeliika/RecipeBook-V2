@@ -1,20 +1,47 @@
-[gd_scene load_steps=6 format=3 uid="uid://cqpd148u0ridy"]
+[gd_scene load_steps=15 format=3 uid="uid://cqpd148u0ridy"]
 
 [ext_resource type="Script" uid="uid://djblrnmke2mfg" path="res://scripts/display/RecipeDisplay.cs" id="1_octap"]
+[ext_resource type="Texture2D" uid="uid://7yghwhpdeh60" path="res://ui/Test.tres" id="2_o52y6"]
 [ext_resource type="Texture2D" uid="uid://be6lxtdgpxdg0" path="res://ui/icons.svg" id="3_o52y6"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_xjr4p"]
-atlas = ExtResource("3_o52y6")
+[sub_resource type="AtlasTexture" id="AtlasTexture_61dnk"]
+atlas = ExtResource("2_o52y6")
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_o52y6"]
+load_path = "res://.godot/imported/icons.svg-0ee3045dd5ac81814b7c281e8ab0aa82.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ae0dt"]
+atlas = SubResource("CompressedTexture2D_o52y6")
 region = Rect2(0, 64, 64, 64)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_61dnk"]
-atlas = SubResource("AtlasTexture_xjr4p")
+[sub_resource type="AtlasTexture" id="AtlasTexture_ndrxw"]
+atlas = SubResource("AtlasTexture_ae0dt")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_x255x"]
 atlas = ExtResource("3_o52y6")
 region = Rect2(64, 0, 64, 64)
 
-[node name="RecipeDisplay" type="VBoxContainer" node_paths=PackedStringArray("RecipeNameLabel", "TagContainer", "OptionsButton", "VariantContainer", "CloseRecipeButton")]
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_gkkb5"]
+load_path = "res://.godot/imported/icons.svg-0ee3045dd5ac81814b7c281e8ab0aa82.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fnusg"]
+atlas = SubResource("CompressedTexture2D_gkkb5")
+region = Rect2(384, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8uw7y"]
+atlas = SubResource("AtlasTexture_fnusg")
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_fkgtg"]
+load_path = "res://.godot/imported/icons.svg-0ee3045dd5ac81814b7c281e8ab0aa82.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f3xo3"]
+atlas = SubResource("CompressedTexture2D_fkgtg")
+region = Rect2(448, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8vtgn"]
+atlas = SubResource("AtlasTexture_f3xo3")
+
+[node name="RecipeDisplay" type="VBoxContainer" node_paths=PackedStringArray("RecipeNameLabel", "TagContainer", "OptionsButton", "VariantContainer", "CloseRecipeButton", "TitleEdit", "DescriptionEdit", "TagSelector", "TagEditContainer", "SelectedTagsContainer", "DescriptionLabel", "AddVariantButton", "CancelEditButton", "ResetEditButton", "SaveEditButton", "DescriptionEditScrollContainer", "AddVariant")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -23,10 +50,22 @@ grow_vertical = 2
 size_flags_horizontal = 3
 script = ExtResource("1_octap")
 RecipeNameLabel = NodePath("TitleBar/RecipeNameLabel")
-TagContainer = NodePath("TagContainer")
+TagContainer = NodePath("ScrollContainer/VBoxContainer/TagContainer")
 OptionsButton = NodePath("TitleBar/OptionsButton")
-VariantContainer = NodePath("VariantTabs")
+VariantContainer = NodePath("ScrollContainer/VBoxContainer/VariantTabs")
 CloseRecipeButton = NodePath("TitleBar/CloseRecipeButton")
+TitleEdit = NodePath("TitleBar/TitleEdit")
+DescriptionEdit = NodePath("ScrollContainer/VBoxContainer/ScrollContainer/MarginContainer2/DescriptionEdit")
+TagSelector = NodePath("ScrollContainer/VBoxContainer/TagEditContainer/TagSelector")
+TagEditContainer = NodePath("ScrollContainer/VBoxContainer/TagEditContainer")
+SelectedTagsContainer = NodePath("ScrollContainer/VBoxContainer/SelectedTagsContainer")
+DescriptionLabel = NodePath("ScrollContainer/VBoxContainer/DescriptionLabel")
+AddVariantButton = NodePath("")
+CancelEditButton = NodePath("TitleBar/CancelEditButton")
+ResetEditButton = NodePath("TitleBar/ResetEditButton")
+SaveEditButton = NodePath("TitleBar/SaveEditButton")
+DescriptionEditScrollContainer = NodePath("ScrollContainer/VBoxContainer/ScrollContainer")
+AddVariant = NodePath("ScrollContainer/VBoxContainer/VariantTabs/+")
 
 [node name="TitleBar" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -37,11 +76,22 @@ layout_mode = 2
 icon = SubResource("AtlasTexture_61dnk")
 expand_icon = true
 
+[node name="CancelEditButton" type="Button" parent="TitleBar"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+icon = SubResource("AtlasTexture_ndrxw")
+
 [node name="RecipeNameLabel" type="Label" parent="TitleBar"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 6
 horizontal_alignment = 1
+
+[node name="TitleEdit" type="LineEdit" parent="TitleBar"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="OptionsButton" type="MenuButton" parent="TitleBar"]
 custom_minimum_size = Vector2(50, 50)
@@ -59,12 +109,76 @@ popup/item_1/id = 1
 popup/item_2/text = "Export"
 popup/item_2/id = 2
 
-[node name="TagContainer" type="HFlowContainer" parent="."]
+[node name="ResetEditButton" type="Button" parent="TitleBar"]
+visible = false
 layout_mode = 2
+size_flags_horizontal = 8
+icon = SubResource("AtlasTexture_8uw7y")
 
-[node name="VariantTabs" type="TabContainer" parent="."]
+[node name="SaveEditButton" type="Button" parent="TitleBar"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 8
+icon = SubResource("AtlasTexture_8vtgn")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TagContainer" type="HFlowContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TagEditContainer" type="HBoxContainer" parent="ScrollContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="TagSelector" type="MenuButton" parent="ScrollContainer/VBoxContainer/TagEditContainer"]
+layout_mode = 2
+text = "Tags ⌄"
+
+[node name="SelectedTagsContainer" type="HFlowContainer" parent="ScrollContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="DescriptionLabel" type="Label" parent="ScrollContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Beschreibung:"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ScrollContainer/VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(50, 100)
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="ScrollContainer/VBoxContainer/ScrollContainer"]
+custom_minimum_size = Vector2(20, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 2
+theme_type_variation = &"SubMarginContainer"
+
+[node name="DescriptionEdit" type="TextEdit" parent="ScrollContainer/VBoxContainer/ScrollContainer/MarginContainer2"]
+layout_mode = 2
+placeholder_text = "Allgemeine Beschreibung einfügen"
+
+[node name="VariantTabs" type="TabContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+current_tab = 0
+
+[node name="+" type="Panel" parent="ScrollContainer/VBoxContainer/VariantTabs"]
+layout_mode = 2
+metadata/_tab_index = 0
+
 [connection signal="pressed" from="TitleBar/CloseRecipeButton" to="." method="OnCloseRecipeButtonPressed"]
+[connection signal="pressed" from="TitleBar/CancelEditButton" to="." method="OnCancelEditButtonPressed"]
 [connection signal="about_to_popup" from="TitleBar/OptionsButton" to="." method="ShowOptionsButton"]
+[connection signal="pressed" from="TitleBar/ResetEditButton" to="." method="OnResetEditButtonPressed"]
+[connection signal="pressed" from="TitleBar/SaveEditButton" to="." method="OnSaveEditButtonPressed"]
+[connection signal="tab_clicked" from="ScrollContainer/VBoxContainer/VariantTabs" to="." method="OnAddVariantPressed"]

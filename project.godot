@@ -22,7 +22,3 @@ EventBus="*res://scripts/utility/EventBus.cs"
 [dotnet]
 
 project/assembly_name="Rezeptbuch 2.0"
-
-[gui]
-
-theme/custom="uid://bts41ngpaub6b"

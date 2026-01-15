@@ -15,11 +15,11 @@ public partial class RecipeBookDisplay : Control
     protected PackedScene RecipePreviewScene = GD.Load<PackedScene>("uid://w1aq4pvqbg8d");
     protected PackedScene SelectedTagScene = GD.Load<PackedScene>("uid://cjc7o8w424mm5");
 
-
-
+    protected EventBus eventBus;
 
     public override void _Ready()
     {
+        eventBus = GetNode<EventBus>("/root/EventBus");
         OptionsMenuButton.GetPopup().Connect("id_pressed", new Callable(this, MethodName.OnIDPressed));
         TagSelector.GetPopup().HideOnCheckableItemSelection = false;
         foreach (GlobalTypes.Tag tag in GlobalTypes.Tags.Keys)
@@ -29,7 +29,7 @@ public partial class RecipeBookDisplay : Control
             SelectedTagsContainer.AddChild(selection);
             selection.Init(GlobalTypes.Tags[tag]);
             selection.Visible = false;
-            selection.Connect("OnTagRemoved", Callable.From(()=>OnTagRemovedSignalReceived((int) tag)));
+            selection.Connect("OnTagRemoved", Callable.From(() => OnTagRemovedSignalReceived((int)tag)));
         }
         TagSelector.GetPopup().Connect("id_pressed", new Callable(this, MethodName.OnTagSelected));
 
@@ -54,7 +54,9 @@ public partial class RecipeBookDisplay : Control
         switch (id)
         {
             case 0:
-                GD.Print("Add");
+                var recipeData = new RecipeData();
+                recipeBookData.AddRecipe(recipeData);
+                eventBus.EmitSignal(EventBus.SignalName.RecipeOpened, recipeData, true);
                 break;
 
             case 1:

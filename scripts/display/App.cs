@@ -13,20 +13,11 @@ public partial class App : VSplitContainer
     public override void _Ready()
     {
         eventBus = GetNode<EventBus>("/root/EventBus");
-        // eventBus.Connect("Test", new Callable(this, MethodName.OnTest));
-        // eventBus.EmitSignal(EventBus.SignalName.Test);
         eventBus.Connect("RecipeOpened", new Callable(this, MethodName.OnRecipeOpened));
         eventBus.Connect("RecipeClosed", new Callable(this, MethodName.OnRecipeClosed));
     }
 
-
-    // void OnTest()
-    // {
-    //     GD.Print("Test");
-    // }
-
-
-    protected void OnRecipeOpened(RecipeData data)
+    protected void OnRecipeOpened(RecipeData data, bool editMode)
     {
         for (int tab = 1; tab < TabHeaderContainer.TabCount; tab++)
         {
@@ -37,35 +28,23 @@ public partial class App : VSplitContainer
                 return;
             }
         }
-        
         RecipeDisplay recipe = (RecipeDisplay)RecipeScene.Instantiate();
         TabContentContainer.AddChild(recipe);
         recipe.Init(data);
         TabHeaderContainer.AddTab(data.recipeName);
         TabHeaderContainer.CurrentTab = TabHeaderContainer.TabCount - 1;
         TabContentContainer.CurrentTab = TabHeaderContainer.TabCount - 1;
-        //TODO 
-        //make child recipe display of tabContenContainer
-        //make toggle button child of tabHeader Container -> set buttonGroup
-        //activate correct index in TabContainer -> should actually be handled by button being pressed
-        //activate correct button (others should unpress)
-
+        if (editMode == true)
+        {
+            recipe.SetEditMode(true, data);
+            
+        }
     }
     protected void OnRecipeClosed()
     {
         TabContentContainer.GetChild(TabContentContainer.CurrentTab).QueueFree();
-        //TabContentContainer.CurrentTab = 0;
         TabHeaderContainer.RemoveTab(TabHeaderContainer.CurrentTab);
-        //TabHeaderContainer.CurrentTab = 0;
-        //TODO 
-        //remove child recipe display of tabContenContainer
-        //remove toggle button child of tabHeader Container -> set buttonGroup
-        //activate correct button (probably recipe book??) -> should automatically opern correct tab
-
     }
-
-    //TODO
-    //function to handle tab button pressed -> activate correct tab in TabContentContainer
 
     protected void OnTabSelected(int tab)
     {

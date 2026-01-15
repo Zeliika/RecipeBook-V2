@@ -1,0 +1,117 @@
+[gd_scene load_steps=4 format=3 uid="uid://dscjfp0vulw7c"]
+
+[ext_resource type="Texture2D" uid="uid://bj7uc7vtd51lv" path="res://ui/icon_atlas.tres" id="2_t7a8x"]
+
+[sub_resource type="CSharpScript" id="CSharpScript_ku5t2"]
+script/source = "using Godot;
+using System;
+
+public partial class VariantEditDisplay : ScrollContainer
+{
+
+	[Export] VBoxContainer IngredientListContainer;
+	[Export] TextEdit VariantDescriptionEdit;
+	[Export] Button AddIngredientButton;
+	public PackedScene IngredientEditDisplayScene = GD.Load<PackedScene>(\"uid://rlb0v3xc2ko2\");
+
+	protected EventBus eventBus;
+
+	public override void _Ready()
+	{
+		eventBus = GetNode<EventBus>(\"/root/EventBus\");
+		eventBus.Connect(\"IngredientDeleted\", new Callable(this, MethodName.OnIngredientDeleted));
+	}
+
+
+	public void Init(VariantData variantData = null)
+	{
+		if (variantData == null)
+		{
+			return;
+		}
+		foreach (IngredientData ingredient in variantData.ingredients)
+		{
+			IngredientEditDisplay display = (IngredientEditDisplay)IngredientEditDisplayScene.Instantiate();
+			IngredientListContainer.AddChild(display);
+			display.Init(ingredient);
+		}
+		VariantDescriptionEdit.Text = variantData.variantDescription;
+
+	}
+
+	protected void OnAddIngredientButtonPressed()
+	{
+		IngredientEditDisplay display = (IngredientEditDisplay)IngredientEditDisplayScene.Instantiate();
+		IngredientListContainer.AddChild(display);
+	}
+
+	protected void OnIngredientDeleted(int index)
+	{
+		IngredientListContainer.GetChild(index).QueueFree();
+	}
+
+}
+"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qqtk3"]
+atlas = ExtResource("2_t7a8x")
+
+[node name="VariantEditDisplay" type="ScrollContainer" node_paths=PackedStringArray("IngredientListContainer", "VariantDescriptionEdit", "AddIngredientButton")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("CSharpScript_ku5t2")
+IngredientListContainer = NodePath("ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/IngredientListContainer")
+VariantDescriptionEdit = NodePath("ScrollContainer/VBoxContainer/ScrollContainer/MarginContainer3/VariantDescriptionEdit")
+AddIngredientButton = NodePath("ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/AddIngredientButton")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="IngredientTitleLabel" type="Label" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "Zutaten:"
+
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"SubMarginContainer"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="IngredientListContainer" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="AddIngredientButton" type="Button" parent="ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+icon = SubResource("AtlasTexture_qqtk3")
+
+[node name="VariantDescriptionLabel" type="Label" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "Anmerkungen zur Variante:"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer3" type="MarginContainer" parent="ScrollContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = &"SubMarginContainer"
+
+[node name="VariantDescriptionEdit" type="TextEdit" parent="ScrollContainer/VBoxContainer/ScrollContainer/MarginContainer3"]
+layout_mode = 2
+
+[connection signal="pressed" from="ScrollContainer/VBoxContainer/MarginContainer/VBoxContainer/AddIngredientButton" to="." method="OnAddIngredientButtonPressed"]

@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3 uid="uid://dw7kutmrmkxh5"]
+
+[ext_resource type="Script" uid="uid://frv7yvluu40e" path="res://scripts/display/IngredientEditDisplay.cs" id="1_haqd7"]
+[ext_resource type="Texture2D" uid="uid://bj7uc7vtd51lv" path="res://ui/icon_atlas.tres" id="2_lfb1w"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nmk80"]
+atlas = ExtResource("2_lfb1w")
+
+[node name="IngredientEditDisplay" type="HBoxContainer" node_paths=PackedStringArray("QuantityEdit", "UnitDropdown", "IngredientNameEdit", "DeleteIngredientButton")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_haqd7")
+QuantityEdit = NodePath("QuantityEdit")
+UnitDropdown = NodePath("UnitDropdown")
+IngredientNameEdit = NodePath("IngredientNameEdit")
+DeleteIngredientButton = NodePath("DeleteIngredientButton")
+
+[node name="QuantityEdit" type="LineEdit" parent="."]
+layout_mode = 2
+placeholder_text = "0"
+
+[node name="UnitDropdown" type="OptionButton" parent="."]
+layout_mode = 2
+
+[node name="IngredientNameEdit" type="LineEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Zutat"
+
+[node name="DeleteIngredientButton" type="Button" parent="."]
+layout_mode = 2
+icon = SubResource("AtlasTexture_nmk80")
+
+[connection signal="pressed" from="DeleteIngredientButton" to="." method="OnDeleteIngredientButtonPressed"]

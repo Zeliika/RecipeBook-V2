@@ -1,13 +1,16 @@
 [gd_scene load_steps=5 format=3 uid="uid://cdfqswcstugay"]
 
 [ext_resource type="Script" uid="uid://dvp56x84xqnkt" path="res://scripts/display/RecipeBookDisplay.cs" id="1_wc0ev"]
-[ext_resource type="Texture2D" uid="uid://bj7uc7vtd51lv" path="res://ui/icon_atlas.tres" id="2_4i4sw"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_lkbbl"]
+load_path = "res://.godot/imported/icons.svg-0ee3045dd5ac81814b7c281e8ab0aa82.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gbu0m"]
+atlas = SubResource("CompressedTexture2D_lkbbl")
+region = Rect2(256, 64, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4i4sw"]
-atlas = ExtResource("2_4i4sw")
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_dywo5"]
-atlas = ExtResource("2_4i4sw")
+atlas = SubResource("AtlasTexture_gbu0m")
 
 [node name="RecipeBookDisplay" type="Control" node_paths=PackedStringArray("TextSearchField", "RecipeList", "ClearSeachButton", "OptionsMenuButton", "TagSelector", "SelectedTagsContainer")]
 layout_mode = 3
@@ -65,7 +68,7 @@ icon = SubResource("AtlasTexture_4i4sw")
 [node name="OptionsMenuButton" type="MenuButton" parent="VSplitContainer/SearchBar"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-icon = SubResource("AtlasTexture_dywo5")
+text = "..."
 icon_alignment = 2
 item_count = 3
 popup/item_0/text = "Add"

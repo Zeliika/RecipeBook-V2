@@ -4,11 +4,11 @@ using System;
 [GlobalClass]
 public partial class RecipeData : Resource
 {
-    [Export] public string recipeName;
-    [Export] public string description;
+    [Export] public string recipeName = "";
+    [Export] public string description = "";
     [Export] public Texture2D texture;
-    [Export] public Godot.Collections.Array<GlobalTypes.Tag> tags;
-    [Export] public Godot.Collections.Array<VariantData> variants;
+    [Export] public Godot.Collections.Array<GlobalTypes.Tag> tags = new Godot.Collections.Array<GlobalTypes.Tag>();
+    [Export] public Godot.Collections.Array<VariantData> variants = new Godot.Collections.Array<VariantData>();
 
 
 
@@ -23,6 +23,5 @@ public partial class RecipeData : Resource
 
     public RecipeData()
     {
-
     }
 }

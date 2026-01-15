@@ -33,6 +33,6 @@ public partial class RecipePreview : Button
 
     public void OnRecipePressed()
     {
-        eventBus.EmitSignal(EventBus.SignalName.RecipeOpened, recipeData);
+        eventBus.EmitSignal(EventBus.SignalName.RecipeOpened, recipeData, false);
     }
 }

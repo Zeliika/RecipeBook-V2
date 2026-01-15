@@ -4,9 +4,9 @@ using System;
 [GlobalClass]
 public partial class VariantData : Resource
 {
-    [Export] public string variantName;
-    [Export] public string variantDescription;
-    [Export] public Godot.Collections.Array<IngredientData> ingredients;
+    [Export] public string variantName = "";
+    [Export] public string variantDescription = "";
+    [Export] public Godot.Collections.Array<IngredientData> ingredients = new Godot.Collections.Array<IngredientData>();
 
     public VariantData(string variantName, Godot.Collections.Array<IngredientData> ingredients, string variantDescription)
     {
@@ -17,8 +17,9 @@ public partial class VariantData : Resource
 
     public VariantData()
     {
-
     }
+
+
 }
 
 
