@@ -29,13 +29,15 @@ metadata/_custom_type_script = "uid://cfvxyix8nk30b"
 script = ExtResource("3_x3qx7")
 variantName = "4-Käse-Pizza"
 variantDescription = ""
-ingredients = Array[Object]([SubResource("Resource_kjaj7"), SubResource("Resource_6a3ln"), SubResource("Resource_yj264")])
+ingredients = Array[ExtResource("2_vifyd")]([SubResource("Resource_kjaj7"), SubResource("Resource_6a3ln"), SubResource("Resource_yj264")])
 metadata/_custom_type_script = "uid://bqw8h25xxib65"
 
 [resource]
 script = ExtResource("1_gjmqe")
 recipeName = "4-Käse-Pizza"
 description = ""
+recipeID = 45678
+lastEdited = 456789
 tags = Array[int]([11, 2])
-variants = Array[Object]([SubResource("Resource_dbp07")])
+variants = Array[ExtResource("3_x3qx7")]([SubResource("Resource_dbp07")])
 metadata/_custom_type_script = "uid://bwfrfm88x651y"

@@ -53,7 +53,7 @@ public partial class RecipeBookLoader : ResourceFormatLoader
     protected RecipeBookData LoadRecipeBook(Godot.Collections.Dictionary<string, Variant> recipeBookDictionary)
     {
         RecipeBookData recipeBookData = new RecipeBookData();
-        var recipes = new Godot.Collections.Array<RecipeData>();
+        var recipes = new Godot.Collections.Dictionary<int,RecipeData>();
 
         foreach (var recipeDictionary in (Godot.Collections.Array<Godot.Collections.Dictionary<string, Variant>>)recipeBookDictionary["recipes"])
         {
@@ -61,6 +61,8 @@ public partial class RecipeBookLoader : ResourceFormatLoader
             recipeData.recipeName = (string)recipeDictionary["recipe"];
             recipeData.tags = (Godot.Collections.Array<GlobalTypes.Tag>)recipeDictionary["tags"];
             recipeData.description = (string)recipeDictionary["description"];
+            recipeData.recipeID = (int)recipeDictionary["recipe_id"];
+            recipeData.lastEdited = (int)recipeDictionary["modification_date"];
             Godot.Collections.Array<VariantData> variants = new Godot.Collections.Array<VariantData>();
             foreach (var variantDictionary in (Godot.Collections.Array<Godot.Collections.Dictionary<string, Variant>>)recipeDictionary["variants"])
             {
@@ -80,7 +82,7 @@ public partial class RecipeBookLoader : ResourceFormatLoader
                 variants.Add(variantData);
             }
             recipeData.variants = variants;
-            recipes.Add(recipeData);
+            recipes.Add(recipeData.recipeID,recipeData);
         }
         recipeBookData.recipeData = recipes;
         return recipeBookData;

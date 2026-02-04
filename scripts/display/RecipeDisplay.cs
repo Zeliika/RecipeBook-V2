@@ -18,12 +18,14 @@ public partial class RecipeDisplay : Control
     [Export] HBoxContainer TagEditContainer;
     [Export] HFlowContainer SelectedTagsContainer;
     [Export] Label DescriptionLabel;
-    [Export] Button AddVariantButton;
     [Export] Button CancelEditButton;
     [Export] Button ResetEditButton;
     [Export] Button SaveEditButton;
     [Export] ScrollContainer DescriptionEditScrollContainer;
     [Export] protected Panel AddVariant;
+    [Export] ConfirmationDialog DeleteRecipeConfirmationDialog;
+    [Export] ConfirmationDialog SaveRecipeConfirmationDialog;
+    [Export] ConfirmationDialog CancelEditConfirmationDialog;
 
     protected HashSet<GlobalTypes.Tag> TagSelection = new HashSet<GlobalTypes.Tag> { };
 
@@ -36,6 +38,8 @@ public partial class RecipeDisplay : Control
     protected EventBus eventBus;
     protected bool editModeActive;
 
+    protected bool newRecipe;
+
 
     public override void _Ready()
     {
@@ -44,6 +48,10 @@ public partial class RecipeDisplay : Control
         TagSelector.GetPopup().HideOnCheckableItemSelection = false;
         foreach (GlobalTypes.Tag tag in GlobalTypes.Tags.Keys)
         {
+            TagDisplay tagDisplay = (TagDisplay)TagDisplayScene.Instantiate();
+            TagContainer.AddChild(tagDisplay);
+            tagDisplay.Init(GlobalTypes.Tags[tag]);
+            tagDisplay.Visible = false;
             TagSelector.GetPopup().AddCheckItem(GlobalTypes.Tags[tag], (int)tag);
             SelectedTagDisplay selection = (SelectedTagDisplay)SelectedTagScene.Instantiate();
             SelectedTagsContainer.AddChild(selection);
@@ -54,20 +62,20 @@ public partial class RecipeDisplay : Control
         TagSelector.GetPopup().Connect("id_pressed", new Callable(this, MethodName.OnTagSelected));
         VariantContainer.SetTabHidden(0, true);
         eventBus.Connect("QuantityTextFieldEdited", new Callable(this, MethodName.OnQuantityTextFieldEdited));
+        eventBus.Connect("DataDisplayChangeRequested", new Callable(this, MethodName.OnDataDisplayChangeRequested));
+        eventBus.Connect("RecipeIsNew", new Callable(this, MethodName.RecipeIsNew));
+        VariantContainer.GetTabBar().Connect("tab_close_pressed", new Callable(this, MethodName.OnDeleteVariantButtonPressed));
     }
 
     public void Init(RecipeData recipeData)
     {
-        GD.Print(DateTime.Now.Ticks);
         this.recipeData = recipeData;
         RecipeNameLabel.Text = recipeData.recipeName;
         foreach (GlobalTypes.Tag tag in recipeData.tags)
         {
-            TagDisplay display = (TagDisplay)TagDisplayScene.Instantiate();
-            TagContainer.AddChild(display);
-            display.Init(GlobalTypes.Tags[tag]);
-
             int index = TagSelector.GetPopup().GetItemIndex((int)tag);
+            TagDisplay tagDisplay = (TagDisplay)TagContainer.GetChild(index);
+            tagDisplay.Visible = true;
             SelectedTagDisplay selection = (SelectedTagDisplay)SelectedTagsContainer.GetChild(index);
             selection.Visible = true;
             TagSelector.GetPopup().SetItemChecked(index, (!TagSelector.GetPopup().IsItemChecked(index)));
@@ -100,7 +108,7 @@ public partial class RecipeDisplay : Control
                 SetEditMode(true, recipeData);
                 break;
             case 1:
-                GD.Print("Delete");
+                DeleteRecipeConfirmationDialog.Popup();
                 break;
             case 2:
                 GD.Print("Export");
@@ -112,6 +120,7 @@ public partial class RecipeDisplay : Control
 
     public void SetEditMode(bool editing, RecipeData recipeData)
     {
+        VariantContainer.GetTabBar().TabCloseDisplayPolicy = TabBar.CloseButtonDisplayPolicy.ShowActiveOnly;
         editModeActive = editing;
         SetEditModeLayout(editing);
         TitleEdit.Text = recipeData.recipeName;
@@ -184,16 +193,31 @@ public partial class RecipeDisplay : Control
 
     protected void OnCancelEditButtonPressed()
     {
-        editModeActive = false;
-        SetEditModeLayout(editModeActive);
-        ResetTags();
-        foreach (Node variantDisplay in VariantContainer.GetChildren())
+        CancelEditConfirmationDialog.Popup();
+    }
+
+    protected void OnCancelEditConfirmed()
+    {
+        if (newRecipe)
         {
-            if (!(variantDisplay is VariantDisplay))
+            eventBus.EmitSignal(EventBus.SignalName.RecipeClosed);
+            OnConfirmDeleteButtonPressed();
+        }
+        else
+        {
+            VariantContainer.GetTabBar().TabCloseDisplayPolicy = TabBar.CloseButtonDisplayPolicy.ShowNever;
+            editModeActive = false;
+            SetEditModeLayout(editModeActive);
+            ResetTags();
+            foreach (Node variantDisplay in VariantContainer.GetChildren())
             {
-                continue;
+                if (!(variantDisplay is VariantDisplay))
+                {
+                    continue;
+                }
+                ((VariantDisplay)variantDisplay).CancelEditMode(editModeActive);
             }
-            ((VariantDisplay)variantDisplay).CancelEditMode(editModeActive);
+            eventBus.EmitSignal("DataDisplayChangeRequested", recipeData);
         }
     }
 
@@ -206,8 +230,8 @@ public partial class RecipeDisplay : Control
             SelectedTagDisplay selection = (SelectedTagDisplay)SelectedTagsContainer.GetChild(index);
             selection.Visible = false;
             TagSelector.GetPopup().SetItemChecked(index, false);
-            TagSelection.Clear();
         }
+        TagSelection.Clear();
 
         foreach (GlobalTypes.Tag tag in recipeData.tags)
         {
@@ -239,6 +263,11 @@ public partial class RecipeDisplay : Control
         }
     }
 
+    protected void OnDeleteVariantButtonPressed(int tab)
+    {
+        VariantContainer.RemoveChild(VariantContainer.GetChild(tab));
+    }
+
     protected VariantDisplay CreateVariantTab(VariantData data)
     {
         VariantDisplay display = (VariantDisplay)VariantDisplayScene.Instantiate();
@@ -249,10 +278,30 @@ public partial class RecipeDisplay : Control
         return display;
     }
 
+    protected void RecipeIsNew(bool newRecipe)
+    {
+        this.newRecipe = newRecipe;
+    }
+
     protected void OnSaveEditButtonPressed()
     {
+        SaveRecipeConfirmationDialog.Popup();
+    }
+
+    protected void OnSaveConfirmed()
+    {
+        newRecipe = false;
         recipeData.recipeName = TitleEdit.GetText();
         recipeData.description = DescriptionEdit.GetText();
+        recipeData.lastEdited = (int)DateTime.Now.Ticks;
+        recipeData.tags.Clear();
+        for (int item = 0; item < TagSelector.GetItemCount(); item++)
+        {
+            if (TagSelector.GetPopup().IsItemChecked((item)))
+            {
+                recipeData.tags.Add((GlobalTypes.Tag)TagSelector.GetPopup().GetItemId(item));
+            }
+        }
         recipeData.variants.Clear();
         foreach (Node variant in VariantContainer.GetChildren())
         {
@@ -262,11 +311,32 @@ public partial class RecipeDisplay : Control
             }
             recipeData.variants.Add(((VariantDisplay)variant).ApplyChanges());
         }
-        //Update RecipeData
-        //get VariantData with variantDisplay.ApplyChanges
-        //Update RecipeBookData
-        //Save RecipeBookData
-        //set Edit Mode false here and in variantDisplay
+        eventBus.EmitSignal("DataDisplayChangeRequested", recipeData);
+        eventBus.EmitSignal("SaveRequested");
+        OnCancelEditButtonPressed();
+    }
+
+    protected void OnDataDisplayChangeRequested(RecipeData recipeData)
+    {
+        foreach (GlobalTypes.Tag tag in GlobalTypes.Tags.Keys)
+        {
+            int index = TagSelector.GetPopup().GetItemIndex((int)tag);
+            TagDisplay tagDisplay = (TagDisplay)TagContainer.GetChild(index);
+            tagDisplay.Visible = false;
+            SelectedTagDisplay selection = (SelectedTagDisplay)SelectedTagsContainer.GetChild(index);
+            selection.Visible = false;
+            TagSelector.GetPopup().SetItemChecked(index, false);
+        }
+        TagSelection.Clear();
+        foreach (Node variant in VariantContainer.GetChildren())
+        {
+            if (!(variant is VariantDisplay))
+            {
+                continue;
+            }
+            variant.Free();
+        }
+        Init(recipeData);
     }
 
     protected void OnQuantityTextFieldEdited(bool isFloat)
@@ -274,5 +344,9 @@ public partial class RecipeDisplay : Control
         SaveEditButton.Disabled = !isFloat;
     }
 
-
+    protected void OnConfirmDeleteButtonPressed()
+    {
+        eventBus.EmitSignal(EventBus.SignalName.DeleteRecipeRequested, recipeData.recipeID);
+        eventBus.EmitSignal(EventBus.SignalName.RecipeClosed);
+    }
 }

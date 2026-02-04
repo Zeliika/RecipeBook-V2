@@ -13,8 +13,6 @@ public partial class VariantDisplay : Control
     [Export] public TextEdit VariantDescriptionEdit;
     [Export] public Texture2D RemoveIngredient;
 
-    public PackedScene IngredientDisplayScene = GD.Load<PackedScene>("uid://ckghx552h32nh");
-
     protected VariantData variantData;
 
     protected TreeItem root;
@@ -162,11 +160,14 @@ public partial class VariantDisplay : Control
             bool isFloat = item.GetText(0).IsValidFloat();
             if (editModeActive)
             {
-                eventBus.EmitSignal("QuantityTextFieldEdited", isFloat);
                 if (!isFloat)
                 {
-                    Color red = new Color(1, 0, 0, 1);
-                    item.SetCustomBgColor(0, red);
+                    if (item.GetText(0) != "")
+                    {
+                        Color red = new Color(1, 0, 0, 1);
+                        item.SetCustomBgColor(0, red);
+                        eventBus.EmitSignal("QuantityTextFieldEdited", isFloat);
+                    }
                 }
                 else
                 

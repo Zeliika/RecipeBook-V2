@@ -27,16 +27,16 @@ public partial class RecipeBookSaver : ResourceFormatSaver
     {
         var recipeBookDictionary = new Godot.Collections.Dictionary<string, Variant> { };
         Godot.Collections.Array<Godot.Collections.Dictionary<string, Variant>> recipes = new Godot.Collections.Array<Godot.Collections.Dictionary<string,Variant>>();
-        foreach (RecipeData recipe in recipeBookData.recipeData)
+        foreach (RecipeData recipe in recipeBookData.recipeData.Values)
         {
             Godot.Collections.Dictionary<string, Variant> recipeDictionary = new Godot.Collections.Dictionary<string, Variant> { };
             recipeDictionary["recipe"] = recipe.recipeName;
             recipeDictionary["description"] = recipe.description;
             recipeDictionary["tags"] = recipe.tags;
             recipeDictionary["icon"] = "";
-            recipeDictionary["recipe_id"] = "";  //TODO generate ID for each recipe on creation and save ID, creation & modification date as metadata
-            recipeDictionary["creation_date"] = "";
-            recipeDictionary["modification_date"] = "";
+            recipeDictionary["recipe_id"] = recipe.recipeID;
+            recipeDictionary["creation_date"] = recipe.recipeID;
+            recipeDictionary["modification_date"] = recipe.lastEdited;
             var variants = new Godot.Collections.Array<Godot.Collections.Dictionary<string, Variant>>();
 
             foreach (VariantData variant in recipe.variants)

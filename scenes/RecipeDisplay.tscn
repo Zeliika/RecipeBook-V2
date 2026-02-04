@@ -41,7 +41,7 @@ region = Rect2(448, 0, 64, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_8vtgn"]
 atlas = SubResource("AtlasTexture_f3xo3")
 
-[node name="RecipeDisplay" type="VBoxContainer" node_paths=PackedStringArray("RecipeNameLabel", "TagContainer", "OptionsButton", "VariantContainer", "CloseRecipeButton", "TitleEdit", "DescriptionEdit", "TagSelector", "TagEditContainer", "SelectedTagsContainer", "DescriptionLabel", "AddVariantButton", "CancelEditButton", "ResetEditButton", "SaveEditButton", "DescriptionEditScrollContainer", "AddVariant")]
+[node name="RecipeDisplay" type="VBoxContainer" node_paths=PackedStringArray("RecipeNameLabel", "TagContainer", "OptionsButton", "VariantContainer", "CloseRecipeButton", "TitleEdit", "DescriptionEdit", "TagSelector", "TagEditContainer", "SelectedTagsContainer", "DescriptionLabel", "CancelEditButton", "ResetEditButton", "SaveEditButton", "DescriptionEditScrollContainer", "AddVariant", "DeleteRecipeConfirmationDialog", "SaveRecipeConfirmationDialog", "CancelEditConfirmationDialog")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -60,12 +60,14 @@ TagSelector = NodePath("ScrollContainer/VBoxContainer/TagEditContainer/TagSelect
 TagEditContainer = NodePath("ScrollContainer/VBoxContainer/TagEditContainer")
 SelectedTagsContainer = NodePath("ScrollContainer/VBoxContainer/SelectedTagsContainer")
 DescriptionLabel = NodePath("ScrollContainer/VBoxContainer/DescriptionLabel")
-AddVariantButton = NodePath("")
 CancelEditButton = NodePath("TitleBar/CancelEditButton")
 ResetEditButton = NodePath("TitleBar/ResetEditButton")
 SaveEditButton = NodePath("TitleBar/SaveEditButton")
 DescriptionEditScrollContainer = NodePath("ScrollContainer/VBoxContainer/ScrollContainer")
 AddVariant = NodePath("ScrollContainer/VBoxContainer/VariantTabs/+")
+DeleteRecipeConfirmationDialog = NodePath("DeleteRecipeConfirmationDialog")
+SaveRecipeConfirmationDialog = NodePath("SaveConfirmationDialog")
+CancelEditConfirmationDialog = NodePath("CancelConfirmationDialog")
 
 [node name="TitleBar" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -176,9 +178,34 @@ current_tab = 0
 layout_mode = 2
 metadata/_tab_index = 0
 
+[node name="DeleteRecipeConfirmationDialog" type="ConfirmationDialog" parent="."]
+title = ""
+initial_position = 2
+size = Vector2i(357, 100)
+force_native = true
+ok_button_text = "Bestätigen"
+dialog_text = "Soll dieses Rezept wirklich gelöscht werden?"
+cancel_button_text = "Abbrechen"
+
+[node name="SaveConfirmationDialog" type="ConfirmationDialog" parent="."]
+initial_position = 4
+force_native = true
+ok_button_text = "Speichern"
+dialog_text = "Soll dieses Rezept wirklich gespeichert werden?"
+cancel_button_text = "Abbrechen"
+
+[node name="CancelConfirmationDialog" type="ConfirmationDialog" parent="."]
+initial_position = 4
+size = Vector2i(622, 100)
+dialog_text = "Soll der Editiermodus wirklich beendet werden, ohne das Rezept zu speichern?"
+cancel_button_text = "Abbrechen"
+
 [connection signal="pressed" from="TitleBar/CloseRecipeButton" to="." method="OnCloseRecipeButtonPressed"]
 [connection signal="pressed" from="TitleBar/CancelEditButton" to="." method="OnCancelEditButtonPressed"]
 [connection signal="about_to_popup" from="TitleBar/OptionsButton" to="." method="ShowOptionsButton"]
 [connection signal="pressed" from="TitleBar/ResetEditButton" to="." method="OnResetEditButtonPressed"]
 [connection signal="pressed" from="TitleBar/SaveEditButton" to="." method="OnSaveEditButtonPressed"]
 [connection signal="tab_clicked" from="ScrollContainer/VBoxContainer/VariantTabs" to="." method="OnAddVariantPressed"]
+[connection signal="confirmed" from="DeleteRecipeConfirmationDialog" to="." method="OnConfirmDeleteButtonPressed"]
+[connection signal="confirmed" from="SaveConfirmationDialog" to="." method="OnSaveConfirmed"]
+[connection signal="confirmed" from="CancelConfirmationDialog" to="." method="OnCancelEditConfirmed"]

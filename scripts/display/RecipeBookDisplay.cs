@@ -11,7 +11,8 @@ public partial class RecipeBookDisplay : Control
     [Export] MenuButton TagSelector;
     [Export] HFlowContainer SelectedTagsContainer;
     public RecipeBookData recipeBookData;
-    protected HashSet<GlobalTypes.Tag> TagSelection = new HashSet<GlobalTypes.Tag>{};
+    protected HashSet<GlobalTypes.Tag> TagSelection = new HashSet<GlobalTypes.Tag> { };
+    protected Godot.Collections.Dictionary<int,RecipePreview> RecipePreviews = new Godot.Collections.Dictionary<int,RecipePreview>();
     protected PackedScene RecipePreviewScene = GD.Load<PackedScene>("uid://w1aq4pvqbg8d");
     protected PackedScene SelectedTagScene = GD.Load<PackedScene>("uid://cjc7o8w424mm5");
 
@@ -21,6 +22,9 @@ public partial class RecipeBookDisplay : Control
     {
         eventBus = GetNode<EventBus>("/root/EventBus");
         OptionsMenuButton.GetPopup().Connect("id_pressed", new Callable(this, MethodName.OnIDPressed));
+        eventBus.Connect("SaveRequested", new Callable(this, MethodName.OnSaveRequested));
+        eventBus.Connect("DeleteRecipeRequested", new Callable(this, MethodName.OnDeleteRecipeRequested));
+        eventBus.Connect("DataDisplayChangeRequested", new Callable(this, MethodName.OnCreateRecipePreviewRequested));
         TagSelector.GetPopup().HideOnCheckableItemSelection = false;
         foreach (GlobalTypes.Tag tag in GlobalTypes.Tags.Keys)
         {
@@ -33,20 +37,31 @@ public partial class RecipeBookDisplay : Control
         }
         TagSelector.GetPopup().Connect("id_pressed", new Callable(this, MethodName.OnTagSelected));
 
-        RecipeBookData recipeBook = (RecipeBookData)ResourceLoader.Load("C:\\Users\\zelii\\Desktop\\test2.rb"); //TODO get path from file dialog
+        RecipeBookData recipeBook = (RecipeBookData)ResourceLoader.Load("C:\\Users\\zelii\\Desktop\\test.rb"); //TODO get path from file dialog
         Init(recipeBook);
-
     }
 
     public void Init(RecipeBookData recipeBookData)
     {
         this.recipeBookData = recipeBookData;
-        foreach (RecipeData recipe in recipeBookData.recipeData)
+        foreach (RecipeData recipe in recipeBookData.recipeData.Values)
         {
-            RecipePreview display = (RecipePreview)RecipePreviewScene.Instantiate();
-            RecipeList.AddChild(display);
-            display.Init(recipe);
+            eventBus.EmitSignal(EventBus.SignalName.DataDisplayChangeRequested, recipe);
         }
+    }
+
+    protected void OnCreateRecipePreviewRequested(RecipeData recipe)
+    {
+        if (RecipePreviews.ContainsKey(recipe.recipeID))
+        {
+            RecipePreviews[recipe.recipeID].Free(); //maybe later only delete preview if name or tags changed
+            RecipePreviews.Remove(recipe.recipeID);
+        }
+        RecipePreview display = (RecipePreview)RecipePreviewScene.Instantiate();
+        RecipeList.AddChild(display);
+        display.Init(recipe);
+        RecipePreviews.Add(recipe.recipeID, display);
+
     }
 
     protected void OnIDPressed(int id)
@@ -55,8 +70,9 @@ public partial class RecipeBookDisplay : Control
         {
             case 0:
                 var recipeData = new RecipeData();
+                recipeData.recipeID = (int)DateTime.Now.Ticks;
                 recipeBookData.AddRecipe(recipeData);
-                eventBus.EmitSignal(EventBus.SignalName.RecipeOpened, recipeData, true);
+                eventBus.EmitSignal(EventBus.SignalName.RecipeOpened, recipeData, true, true);
                 break;
 
             case 1:
@@ -141,7 +157,7 @@ public partial class RecipeBookDisplay : Control
         {
             return true;
         }
-            foreach (VariantData variant in recipeData.variants)
+        foreach (VariantData variant in recipeData.variants)
         {
             if (ProcessString(variant.variantName).Contains(searchText))
             {
@@ -158,6 +174,26 @@ public partial class RecipeBookDisplay : Control
         return false;
     }
 
+    protected void OnSaveRequested()
+    {
+        // var watch = System.Diagnostics.Stopwatch.StartNew();
+        ResourceSaver.Save(recipeBookData, "C:\\Users\\zelii\\Desktop\\test2.rb"); // TODO use file dialog to get path
+        // watch.Stop();
+    }
 
+    protected void OnDeleteRecipeRequested(int id)
+    {
+        recipeBookData.RemoveRecipe(recipeBookData.recipeData[id]);
+        eventBus.EmitSignal("SaveRequested");
+        if (RecipePreviews.ContainsKey(id))
+        {
+            RecipeList.RemoveChild(RecipePreviews[id]);
+            RecipePreviews.Remove(id);
+        }
+    }
+
+    //TODO
+    // Rezepte auswählen
+    // ausgewählte Rezepte löschen (mit ConfirmDialog)
 
 }
