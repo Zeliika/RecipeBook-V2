@@ -12,7 +12,7 @@ region = Rect2(256, 64, 64, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_4i4sw"]
 atlas = SubResource("AtlasTexture_gbu0m")
 
-[node name="RecipeBookDisplay" type="Control" node_paths=PackedStringArray("TextSearchField", "RecipeList", "ClearSeachButton", "OptionsMenuButton", "TagSelector", "SelectedTagsContainer")]
+[node name="RecipeBookDisplay" type="Control" node_paths=PackedStringArray("TextSearchField", "RecipeList", "ClearSeachButton", "OptionsMenuButton", "TagSelector", "SelectedTagsContainer", "ImportFileDialog", "ExportFileDialog", "SortRecipesMenuButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,11 +23,14 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_wc0ev")
 TextSearchField = NodePath("VSplitContainer/SearchBar/TextSearchField")
-RecipeList = NodePath("VSplitContainer/ScrollContainer/RecipeList")
+RecipeList = NodePath("VSplitContainer/ScrollContainer/VBoxContainer/RecipeList")
 ClearSeachButton = NodePath("VSplitContainer/SearchBar/ClearSearchButton")
 OptionsMenuButton = NodePath("VSplitContainer/SearchBar/OptionsMenuButton")
 TagSelector = NodePath("VSplitContainer/SearchBar/TagSelector")
 SelectedTagsContainer = NodePath("VSplitContainer/SelectedTagsContainer")
+ImportFileDialog = NodePath("ImportFileDialog")
+ExportFileDialog = NodePath("ExportFileDialog")
+SortRecipesMenuButton = NodePath("VSplitContainer/ScrollContainer/VBoxContainer/SortRecipesMenuButton")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 1
@@ -70,13 +73,16 @@ custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 text = "..."
 icon_alignment = 2
-item_count = 3
-popup/item_0/text = "Add"
+item_count = 4
+popup/item_0/text = "Hinzufügen"
 popup/item_0/id = 0
 popup/item_1/text = "Select"
+popup/item_1/checkable = 1
 popup/item_1/id = 1
-popup/item_2/text = "Save"
+popup/item_2/text = "Exportieren"
 popup/item_2/id = 2
+popup/item_3/text = "Importieren"
+popup/item_3/id = 3
 
 [node name="SelectedTagsContainer" type="HFlowContainer" parent="VSplitContainer"]
 layout_mode = 2
@@ -86,10 +92,43 @@ size_flags_vertical = 0
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="RecipeList" type="VBoxContainer" parent="VSplitContainer/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VSplitContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="SortRecipesMenuButton" type="MenuButton" parent="VSplitContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Sortieren nach"
+item_count = 2
+popup/item_0/text = "A-Z"
+popup/item_0/id = 0
+popup/item_1/text = "Z-A"
+popup/item_1/id = 1
+
+[node name="RecipeList" type="VBoxContainer" parent="VSplitContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ImportFileDialog" type="FileDialog" parent="."]
+title = "Open a File"
+initial_position = 4
+force_native = true
+ok_button_text = "Open"
+dialog_hide_on_ok = true
+cancel_button_text = "Abbrechen"
+file_mode = 0
+access = 2
+
+[node name="ExportFileDialog" type="FileDialog" parent="."]
+initial_position = 4
+cancel_button_text = "Abbrechen"
+access = 2
+use_native_dialog = true
+
 [connection signal="text_submitted" from="VSplitContainer/SearchBar/TextSearchField" to="." method="StartSearch" unbinds=1]
 [connection signal="pressed" from="VSplitContainer/SearchBar/ClearSearchButton" to="." method="ClearSearch"]
+[connection signal="file_selected" from="ImportFileDialog" to="." method="OnRecipeImportConfirmed"]
+[connection signal="file_selected" from="ExportFileDialog" to="." method="OnRecipeExportConfirmed"]

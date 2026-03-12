@@ -20,7 +20,10 @@ public partial class RecipeBookSaver : ResourceFormatSaver
     public override Error _Save(Resource resource, string path, uint flags)
     {
         FileAccess file = FileAccess.Open(path, FileAccess.ModeFlags.Write);
-        return file.StoreString(Json.Stringify(GetSaveData((RecipeBookData)resource), "\t")) ? Error.Ok : Error.Failed;
+        var saveFile = file.StoreString(Json.Stringify(GetSaveData((RecipeBookData)resource), "\t"));
+        file.Dispose();
+        return saveFile ? Error.Ok : Error.Failed;
+        // return file.StoreString(Json.Stringify(GetSaveData((RecipeBookData)resource), "\t")) ? Error.Ok : Error.Failed;
     }
 
     protected Godot.Collections.Dictionary<string, Variant> GetSaveData(RecipeBookData recipeBookData)
@@ -53,6 +56,7 @@ public partial class RecipeBookSaver : ResourceFormatSaver
                     ingredientDictionary["ingredient"] = ingredient.ingredientName;
                     ingredientDictionary["base_quantity"] = ingredient.baseQuantity;
                     ingredientDictionary["unit"] = (int) ingredient.unit;
+                    ingredientDictionary["recipeID"] = ingredient.recipeID;
                     ingredients.Add(ingredientDictionary);
                 }
                 variantDictionary["ingredients"] = ingredients;
@@ -62,6 +66,8 @@ public partial class RecipeBookSaver : ResourceFormatSaver
             recipes.Add(recipeDictionary);
         }
         recipeBookDictionary["recipes"] = recipes;
+
+        // GD.Print(recipeBookDictionary);
 
         return recipeBookDictionary;
     }

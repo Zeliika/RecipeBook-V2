@@ -53,7 +53,7 @@ public partial class RecipeBookLoader : ResourceFormatLoader
     protected RecipeBookData LoadRecipeBook(Godot.Collections.Dictionary<string, Variant> recipeBookDictionary)
     {
         RecipeBookData recipeBookData = new RecipeBookData();
-        var recipes = new Godot.Collections.Dictionary<int,RecipeData>();
+        var recipes = new Godot.Collections.Dictionary<long,RecipeData>();
 
         foreach (var recipeDictionary in (Godot.Collections.Array<Godot.Collections.Dictionary<string, Variant>>)recipeBookDictionary["recipes"])
         {
@@ -61,8 +61,8 @@ public partial class RecipeBookLoader : ResourceFormatLoader
             recipeData.recipeName = (string)recipeDictionary["recipe"];
             recipeData.tags = (Godot.Collections.Array<GlobalTypes.Tag>)recipeDictionary["tags"];
             recipeData.description = (string)recipeDictionary["description"];
-            recipeData.recipeID = (int)recipeDictionary["recipe_id"];
-            recipeData.lastEdited = (int)recipeDictionary["modification_date"];
+            recipeData.recipeID = (long)recipeDictionary["recipe_id"];
+            recipeData.lastEdited = (long)recipeDictionary["modification_date"];
             Godot.Collections.Array<VariantData> variants = new Godot.Collections.Array<VariantData>();
             foreach (var variantDictionary in (Godot.Collections.Array<Godot.Collections.Dictionary<string, Variant>>)recipeDictionary["variants"])
             {
@@ -76,6 +76,7 @@ public partial class RecipeBookLoader : ResourceFormatLoader
                     ingredientData.ingredientName = (string)ingredientDictionary["ingredient"];
                     ingredientData.baseQuantity = (float)ingredientDictionary["base_quantity"];
                     ingredientData.unit = (GlobalTypes.Unit)(int)ingredientDictionary["unit"];
+                    ingredientData.recipeID = (long)ingredientDictionary["recipeID"];
                     ingredients.Add(ingredientData);
                 }
                 variantData.ingredients = ingredients;

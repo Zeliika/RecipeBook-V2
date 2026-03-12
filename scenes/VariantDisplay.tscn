@@ -13,7 +13,7 @@ region = Rect2(128, 0, 64, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_dypnu"]
 atlas = SubResource("AtlasTexture_etvxq")
 
-[node name="VariantInfo" type="ScrollContainer" node_paths=PackedStringArray("RecipeDescriptionLabel", "RecipeDescription", "VariantDescription", "IngredientList", "AddIngredientButton", "VariantNameEdit", "VariantDescriptionEdit")]
+[node name="VariantInfo" type="ScrollContainer" node_paths=PackedStringArray("RecipeDescriptionLabel", "RecipeDescription", "IngredientList", "AddIngredientButton", "VariantNameEdit", "VariantDescriptionEdit", "AddRecipeLinkButton", "AddRecipeLinkConfirmationDialog", "RecipeList")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -24,12 +24,14 @@ size_flags_vertical = 3
 script = ExtResource("1_c78pq")
 RecipeDescriptionLabel = NodePath("VBoxContainer/DescriptionLabel")
 RecipeDescription = NodePath("VBoxContainer/RecipeDescription")
-VariantDescription = NodePath("VBoxContainer/VariantDescriptiion")
 IngredientList = NodePath("VBoxContainer/IngredientList")
-AddIngredientButton = NodePath("VBoxContainer/AddIngredientButton")
+AddIngredientButton = NodePath("VBoxContainer/ButtonContainer/AddIngredientButton")
 VariantNameEdit = NodePath("VBoxContainer/VariantNameEdit")
 VariantDescriptionEdit = NodePath("VBoxContainer/VariantDescriptionEdit")
 RemoveIngredient = ExtResource("2_etvxq")
+AddRecipeLinkButton = NodePath("VBoxContainer/ButtonContainer/AddRecipeLinkButton")
+AddRecipeLinkConfirmationDialog = NodePath("AddRecipeLinkConfirmationDialog")
+RecipeList = NodePath("AddRecipeLinkConfirmationDialog/RecipeList")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -37,11 +39,13 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VariantNameLabel" type="Label" parent="VBoxContainer"]
+visible = false
 layout_mode = 2
 
 [node name="VariantNameEdit" type="TextEdit" parent="VBoxContainer"]
-visible = false
+custom_minimum_size = Vector2(0, 35)
 layout_mode = 2
+placeholder_text = "Name für Variante"
 
 [node name="IngredientTitleLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
@@ -56,12 +60,22 @@ hide_folding = true
 hide_root = true
 auto_tooltip = false
 
-[node name="AddIngredientButton" type="Button" parent="VBoxContainer"]
+[node name="ButtonContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="AddIngredientButton" type="Button" parent="VBoxContainer/ButtonContainer"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+text = "Zutat hinzufügen"
 icon = SubResource("AtlasTexture_dypnu")
+
+[node name="AddRecipeLinkButton" type="Button" parent="VBoxContainer/ButtonContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Rezeptlink hinzufügen"
 
 [node name="DescriptionLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
@@ -76,15 +90,37 @@ size_flags_vertical = 1
 layout_mode = 2
 text = "Anmerkungen zur Variante:"
 
-[node name="VariantDescriptiion" type="Label" parent="VBoxContainer"]
+[node name="VariantDescription" type="Label" parent="VBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 1
 
 [node name="VariantDescriptionEdit" type="TextEdit" parent="VBoxContainer"]
-visible = false
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+
+[node name="AddRecipeLinkConfirmationDialog" type="ConfirmationDialog" parent="."]
+title = "Rezept hinzufügen..."
+initial_position = 4
+size = Vector2i(400, 500)
+force_native = true
+ok_button_text = "Hinzufügen"
+cancel_button_text = "Abbrechen"
+
+[node name="RecipeList" type="Tree" parent="AddRecipeLinkConfirmationDialog"]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 214.0
+offset_bottom = 51.0
+hide_folding = true
+hide_root = true
+auto_tooltip = false
 
 [connection signal="button_clicked" from="VBoxContainer/IngredientList" to="." method="OnDeleteIngredientButtonPressed"]
 [connection signal="item_edited" from="VBoxContainer/IngredientList" to="." method="OnIngredientListItemSelected"]
-[connection signal="pressed" from="VBoxContainer/AddIngredientButton" to="." method="OnAddIngredientButtonPressed"]
+[connection signal="item_selected" from="VBoxContainer/IngredientList" to="." method="OnIngredientListItemSelected"]
+[connection signal="pressed" from="VBoxContainer/ButtonContainer/AddIngredientButton" to="." method="OnAddIngredientButtonPressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonContainer/AddRecipeLinkButton" to="." method="OnAddRecipeLinkButtonPressed"]
+[connection signal="confirmed" from="AddRecipeLinkConfirmationDialog" to="." method="OnAddRecipeLinkConfirmed"]
+[connection signal="item_selected" from="AddRecipeLinkConfirmationDialog/RecipeList" to="." method="OnRecipeListItemSelected"]

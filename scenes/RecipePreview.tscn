@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cj854rck3r0lf" path="res://scripts/display/RecipePreview.cs" id="1_7hkim"]
 [ext_resource type="Texture2D" uid="uid://ch2cm7qeivw3m" path="res://ui/PlaceHolderImage.tres" id="2_hjx2m"]
 
-[node name="RecipePreview" type="Button" node_paths=PackedStringArray("RecipeNamePreview", "TagPreviewContainer")]
+[node name="RecipePreview" type="Button" node_paths=PackedStringArray("RecipeNamePreview", "TagPreviewContainer", "SelectRecipeCheckBox")]
 custom_minimum_size = Vector2(0, 150)
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,6 +13,7 @@ grow_vertical = 2
 script = ExtResource("1_7hkim")
 RecipeNamePreview = NodePath("HBoxContainer/VBoxContainer/RecipeNamePreview")
 TagPreviewContainer = NodePath("HBoxContainer/VBoxContainer/TagPreviewContainer")
+SelectRecipeCheckBox = NodePath("HBoxContainer/CheckBox")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -45,3 +46,4 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [connection signal="pressed" from="." to="." method="OnRecipePressed"]
+[connection signal="toggled" from="HBoxContainer/CheckBox" to="." method="OnRecipeSelected"]

@@ -41,7 +41,7 @@ region = Rect2(448, 0, 64, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_8vtgn"]
 atlas = SubResource("AtlasTexture_f3xo3")
 
-[node name="RecipeDisplay" type="VBoxContainer" node_paths=PackedStringArray("RecipeNameLabel", "TagContainer", "OptionsButton", "VariantContainer", "CloseRecipeButton", "TitleEdit", "DescriptionEdit", "TagSelector", "TagEditContainer", "SelectedTagsContainer", "DescriptionLabel", "CancelEditButton", "ResetEditButton", "SaveEditButton", "DescriptionEditScrollContainer", "AddVariant", "DeleteRecipeConfirmationDialog", "SaveRecipeConfirmationDialog", "CancelEditConfirmationDialog")]
+[node name="RecipeDisplay" type="VBoxContainer" node_paths=PackedStringArray("TagContainer", "OptionsButton", "VariantContainer", "CloseRecipeButton", "TitleEdit", "DescriptionEdit", "TagSelector", "TagEditContainer", "SelectedTagsContainer", "DescriptionLabel", "CancelEditButton", "ResetEditButton", "SaveEditButton", "DescriptionEditScrollContainer", "AddVariant", "DeleteRecipeConfirmationDialog", "SaveRecipeConfirmationDialog", "CancelEditConfirmationDialog", "ExportRecipeFileDialog")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -49,7 +49,6 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 script = ExtResource("1_octap")
-RecipeNameLabel = NodePath("TitleBar/RecipeNameLabel")
 TagContainer = NodePath("ScrollContainer/VBoxContainer/TagContainer")
 OptionsButton = NodePath("TitleBar/OptionsButton")
 VariantContainer = NodePath("ScrollContainer/VBoxContainer/VariantTabs")
@@ -68,6 +67,7 @@ AddVariant = NodePath("ScrollContainer/VBoxContainer/VariantTabs/+")
 DeleteRecipeConfirmationDialog = NodePath("DeleteRecipeConfirmationDialog")
 SaveRecipeConfirmationDialog = NodePath("SaveConfirmationDialog")
 CancelEditConfirmationDialog = NodePath("CancelConfirmationDialog")
+ExportRecipeFileDialog = NodePath("FileDialog")
 
 [node name="TitleBar" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -85,15 +85,16 @@ size_flags_horizontal = 0
 icon = SubResource("AtlasTexture_ndrxw")
 
 [node name="RecipeNameLabel" type="Label" parent="TitleBar"]
+visible = false
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 6
 horizontal_alignment = 1
 
 [node name="TitleEdit" type="LineEdit" parent="TitleBar"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
+placeholder_text = "Rezepttitel"
 
 [node name="OptionsButton" type="MenuButton" parent="TitleBar"]
 custom_minimum_size = Vector2(50, 50)
@@ -200,6 +201,13 @@ size = Vector2i(622, 100)
 dialog_text = "Soll der Editiermodus wirklich beendet werden, ohne das Rezept zu speichern?"
 cancel_button_text = "Abbrechen"
 
+[node name="FileDialog" type="FileDialog" parent="."]
+initial_position = 4
+dialog_hide_on_ok = true
+cancel_button_text = "Abbrechen"
+access = 2
+use_native_dialog = true
+
 [connection signal="pressed" from="TitleBar/CloseRecipeButton" to="." method="OnCloseRecipeButtonPressed"]
 [connection signal="pressed" from="TitleBar/CancelEditButton" to="." method="OnCancelEditButtonPressed"]
 [connection signal="about_to_popup" from="TitleBar/OptionsButton" to="." method="ShowOptionsButton"]
@@ -209,3 +217,4 @@ cancel_button_text = "Abbrechen"
 [connection signal="confirmed" from="DeleteRecipeConfirmationDialog" to="." method="OnConfirmDeleteButtonPressed"]
 [connection signal="confirmed" from="SaveConfirmationDialog" to="." method="OnSaveConfirmed"]
 [connection signal="confirmed" from="CancelConfirmationDialog" to="." method="OnCancelEditConfirmed"]
+[connection signal="file_selected" from="FileDialog" to="." method="OnRecipeExportConfirmed"]

@@ -6,15 +6,21 @@ public partial class RecipePreview : Button
     [Export] public TextureRect PlaceHolderImage;
     [Export] public Label RecipeNamePreview;
     [Export] public HFlowContainer TagPreviewContainer;
+
+    [Export] public CheckBox SelectRecipeCheckBox;
+
     public PackedScene TagDisplayScene = GD.Load<PackedScene>("uid://b01ict1hfluwg");
 
     public RecipeData recipeData;
+
+    public bool isSelected;
     protected EventBus eventBus;
 
 
     public override void _Ready()
     {
         eventBus = GetNode<EventBus>("/root/EventBus");
+        isSelected = false;
     }
     
     public void Init(RecipeData recipeData)
@@ -34,5 +40,20 @@ public partial class RecipePreview : Button
     public void OnRecipePressed()
     {
         eventBus.EmitSignal(EventBus.SignalName.RecipeOpened, recipeData, false, false);
+    }
+
+
+    public void ShowCheckBox(bool showCheckBox)
+    {
+        SelectRecipeCheckBox.Visible = showCheckBox;
+        if (!showCheckBox)
+        {
+            SelectRecipeCheckBox.ButtonPressed = false;
+        }
+    }
+    
+    protected void OnRecipeSelected(bool isSelected)
+    {
+        this.isSelected = isSelected;
     }
 }

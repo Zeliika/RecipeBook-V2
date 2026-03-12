@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class RecipeBookDisplay : Control
 {
@@ -10,18 +11,24 @@ public partial class RecipeBookDisplay : Control
     [Export] MenuButton OptionsMenuButton;
     [Export] MenuButton TagSelector;
     [Export] HFlowContainer SelectedTagsContainer;
+    [Export] FileDialog ImportFileDialog;
+    [Export] FileDialog ExportFileDialog;
+    [Export] MenuButton SortRecipesMenuButton;
     public RecipeBookData recipeBookData;
     protected HashSet<GlobalTypes.Tag> TagSelection = new HashSet<GlobalTypes.Tag> { };
-    protected Godot.Collections.Dictionary<int,RecipePreview> RecipePreviews = new Godot.Collections.Dictionary<int,RecipePreview>();
+    protected Godot.Collections.Dictionary<long,RecipePreview> RecipePreviews = new Godot.Collections.Dictionary<long,RecipePreview>();
     protected PackedScene RecipePreviewScene = GD.Load<PackedScene>("uid://w1aq4pvqbg8d");
     protected PackedScene SelectedTagScene = GD.Load<PackedScene>("uid://cjc7o8w424mm5");
 
     protected EventBus eventBus;
 
+    protected bool selectRecipesActive;
+
     public override void _Ready()
     {
         eventBus = GetNode<EventBus>("/root/EventBus");
         OptionsMenuButton.GetPopup().Connect("id_pressed", new Callable(this, MethodName.OnIDPressed));
+        SortRecipesMenuButton.GetPopup().Connect("id_pressed", new Callable(this, MethodName.OnSortRecipesButtonIDPressed));
         eventBus.Connect("SaveRequested", new Callable(this, MethodName.OnSaveRequested));
         eventBus.Connect("DeleteRecipeRequested", new Callable(this, MethodName.OnDeleteRecipeRequested));
         eventBus.Connect("DataDisplayChangeRequested", new Callable(this, MethodName.OnCreateRecipePreviewRequested));
@@ -36,9 +43,9 @@ public partial class RecipeBookDisplay : Control
             selection.Connect("OnTagRemoved", Callable.From(() => OnTagRemovedSignalReceived((int)tag)));
         }
         TagSelector.GetPopup().Connect("id_pressed", new Callable(this, MethodName.OnTagSelected));
-
-        RecipeBookData recipeBook = (RecipeBookData)ResourceLoader.Load("C:\\Users\\zelii\\Desktop\\test.rb"); //TODO get path from file dialog
-        Init(recipeBook);
+        RecipeBookData recipeBookData = (RecipeBookData)ResourceLoader.Load("C:\\Users\\zelii\\Desktop\\test2.rb"); //TODO get path from file dialog
+        App.recipeBook = recipeBookData;
+        Init(recipeBookData);
     }
 
     public void Init(RecipeBookData recipeBookData)
@@ -70,17 +77,28 @@ public partial class RecipeBookDisplay : Control
         {
             case 0:
                 var recipeData = new RecipeData();
-                recipeData.recipeID = (int)DateTime.Now.Ticks;
+                recipeData.recipeID = DateTime.Now.Ticks;
+                GD.Print(recipeData.recipeID);
                 recipeBookData.AddRecipe(recipeData);
                 eventBus.EmitSignal(EventBus.SignalName.RecipeOpened, recipeData, true, true);
                 break;
 
             case 1:
-                GD.Print("Select");
+                selectRecipesActive = !OptionsMenuButton.GetPopup().IsItemChecked(id);
+                OptionsMenuButton.GetPopup().SetItemChecked(id, selectRecipesActive);
+                foreach (RecipePreview recipePreview in RecipeList.GetChildren())
+                {
+                    recipePreview.ShowCheckBox(OptionsMenuButton.GetPopup().IsItemChecked(id));
+                }
                 break;
 
             case 2:
-                ResourceSaver.Save(recipeBookData, "C:\\Users\\zelii\\Desktop\\test2.rb"); // TODO use file dialog to get path
+                ExportFileDialog.Popup();
+                // ResourceSaver.Save(recipeBookData, "C:\\Users\\zelii\\Desktop\\test3.rb"); // TODO use file dialog to get path
+                break;
+
+            case 3:
+                ImportFileDialog.Popup();
                 break;
             default:
                 return;
@@ -177,11 +195,12 @@ public partial class RecipeBookDisplay : Control
     protected void OnSaveRequested()
     {
         // var watch = System.Diagnostics.Stopwatch.StartNew();
+        GD.Print(recipeBookData.recipeData.Keys);
         ResourceSaver.Save(recipeBookData, "C:\\Users\\zelii\\Desktop\\test2.rb"); // TODO use file dialog to get path
         // watch.Stop();
     }
 
-    protected void OnDeleteRecipeRequested(int id)
+    protected void OnDeleteRecipeRequested(long id)
     {
         recipeBookData.RemoveRecipe(recipeBookData.recipeData[id]);
         eventBus.EmitSignal("SaveRequested");
@@ -192,8 +211,84 @@ public partial class RecipeBookDisplay : Control
         }
     }
 
-    //TODO
-    // Rezepte auswählen
-    // ausgewählte Rezepte löschen (mit ConfirmDialog)
+    protected void OnRecipeExportConfirmed(string path)
+    {
+        if (!path.EndsWith(".rb"))
+        {
+            path += ".rb";
+        }
+        RecipeBookData exportRecipeBook = new();
+        exportRecipeBook.recipeData = [];
+        if (selectRecipesActive)
+        {
+            foreach (RecipePreview recipePreview in RecipeList.GetChildren())
+            {
+                if (recipePreview.isSelected)
+                {
+                    exportRecipeBook.AddRecipe(recipePreview.recipeData);
+                }
+            }
+        }
+        else
+        {
+            exportRecipeBook = recipeBookData;
+        }
+        ResourceSaver.Save(exportRecipeBook, path);
+    }
+    
+    protected void OnRecipeImportConfirmed(string path)
+    {
+        RecipeBookData importRecipeBook = (RecipeBookData)ResourceLoader.Load(path); //TODO get path from file dialog
+        foreach(RecipeData recipeImportData in importRecipeBook.recipeData.Values)
+        {
+            if (!recipeBookData.recipeData.ContainsKey(recipeImportData.recipeID))
+            {
+                recipeBookData.AddRecipe(recipeImportData);
+                OnCreateRecipePreviewRequested(recipeImportData);
+                ResourceSaver.Save(recipeBookData, "C:\\Users\\zelii\\Desktop\\test2.rb");
+            }
+            else
+            {
+                GD.Print("Recipe is already part of RecipeBook");
+            }
+        }
+
+    }
+
+    protected void OnSortRecipesButtonIDPressed(int id)
+    {
+        // var sortedList = RecipeList.GetChildren();
+        System.Linq.IOrderedEnumerable<Godot.Node> sortedList = Enumerable.Empty<Godot.Node>().OrderBy(x => 1);
+        // Func<string, string, int> compareRecipeNames = (recipeNameA, recipeNameB) => recipeNameA.CompareTo(recipeNameB);
+        switch(id)
+        {
+            case 0:
+                sortedList =  RecipeList.GetChildren().OrderBy(recipe => ((RecipePreview)recipe).recipeData.recipeName);
+                break;
+            // case 0:
+            //     foreach(RecipePreview recipeA in RecipeList.GetChildren())
+            //     {
+            //         foreach(RecipePreview recipeB in RecipeList.GetChildren())
+            //         {
+            //             if (compareRecipeNames(recipeA.recipeData.recipeName, recipeB.recipeData.recipeName) > 0)
+            //             {
+            //                 RecipeList.MoveChild(recipeA, recipeB.GetIndex());
+            //             }
+            //         }
+            //     }
+            //     break;
+
+            case 1:
+            sortedList =  RecipeList.GetChildren().OrderByDescending(recipe => ((RecipePreview)recipe).recipeData.recipeName);
+                break;
+            default:
+                sortedList =  RecipeList.GetChildren().OrderBy(recipe => ((RecipePreview)recipe).recipeData.recipeName);
+                break;
+        }
+        for (int i = 0; i < sortedList.Count<Godot.Node>(); i++)
+            {
+                RecipeList.MoveChild(sortedList.ElementAt<Godot.Node>(i), i);
+            }
+    }
 
 }

@@ -6,8 +6,8 @@ public partial class RecipeData : Resource
 {
     [Export] public string recipeName = "";
     [Export] public string description = "";
-    [Export] public int recipeID;
-    [Export] public int lastEdited;
+    [Export] public long recipeID;
+    [Export] public long lastEdited;
     [Export] public Texture2D texture;
     [Export] public Godot.Collections.Array<GlobalTypes.Tag> tags = new Godot.Collections.Array<GlobalTypes.Tag>();
     [Export] public Godot.Collections.Array<VariantData> variants = new Godot.Collections.Array<VariantData>();
@@ -15,7 +15,7 @@ public partial class RecipeData : Resource
 
 
 
-    public RecipeData(string recipeName, Godot.Collections.Array<VariantData> variants, Godot.Collections.Array<GlobalTypes.Tag> tags, string description, int recipeID, int lastEdited)
+    public RecipeData(string recipeName, Godot.Collections.Array<VariantData> variants, Godot.Collections.Array<GlobalTypes.Tag> tags, string description, long recipeID, long lastEdited)
     {
         this.recipeName = recipeName;
         this.tags = tags;

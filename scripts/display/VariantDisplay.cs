@@ -6,12 +6,19 @@ public partial class VariantDisplay : Control
 {
     [Export] public Label RecipeDescriptionLabel;
     [Export] public Label RecipeDescription;
-    [Export] public Label VariantDescription;
+    // [Export] public Label VariantDescription;
     [Export] public Tree IngredientList;
     [Export] public Button AddIngredientButton;
     [Export] public TextEdit VariantNameEdit;
     [Export] public TextEdit VariantDescriptionEdit;
     [Export] public Texture2D RemoveIngredient;
+    [Export] public Button AddRecipeLinkButton;
+    [Export] public ConfirmationDialog AddRecipeLinkConfirmationDialog;
+    [Export] public Tree RecipeList;
+
+    protected RecipeBookData recipeBook;
+
+    protected RecipeData selectedRecipe;
 
     protected VariantData variantData;
 
@@ -21,12 +28,14 @@ public partial class VariantDisplay : Control
 
     protected bool editModeActive;
     protected EventBus eventBus;
+    protected TreeItem rootRecipeList;
 
-
+    //TODO remove VariantNameLabel & VariantDescriptionLabel, instead set parameter editable of TextEdits true/false
     //TODO Funktionen zum EditMode aufräumen, schauen, was man in extra Funktion zusammenfassen kann
     public override void _Ready()
     {
         eventBus = GetNode<EventBus>("/root/EventBus");
+        rootRecipeList = RecipeList.CreateItem();
     }
 
 
@@ -34,7 +43,7 @@ public partial class VariantDisplay : Control
     {
         this.variantData = variantData;
         RecipeDescription.Text = recipeDescription;
-        VariantDescription.Text = variantData.variantDescription;
+        VariantDescriptionEdit.Text = variantData.variantDescription;
         root = IngredientList.CreateItem();
 
         foreach (IngredientData ingredient in variantData.ingredients)
@@ -46,6 +55,8 @@ public partial class VariantDisplay : Control
             UnitOptions += (value + ",");
         }
         editModeActive = false;
+        VariantDescriptionEdit.Editable = false;
+
     }
 
     public void SetEditMode(bool editing)
@@ -62,20 +73,21 @@ public partial class VariantDisplay : Control
             item.SetRange(1, (int)item.GetMetadata(1));
             item.SetSelectable(1, editing);
             item.SetEditable(2, editing);
-            item.SetSelectable(2, editing);
+            // item.SetSelectable(2, editing);
             item.AddButton(2, RemoveIngredient);
         }
-        VariantDescriptionEdit.Text = variantData.variantDescription;
+        VariantDescriptionEdit.Editable = editing;
     }
 
     protected void SetEditModeLayout(bool editing)
     {
         VariantNameEdit.Visible = editing;
         AddIngredientButton.Visible = editing;
+        AddRecipeLinkButton.Visible = editing;
         RecipeDescriptionLabel.Visible = !editing;
         RecipeDescription.Visible = !editing;
-        VariantDescription.Visible = !editing;
-        VariantDescriptionEdit.Visible = editing;
+        // VariantDescription.Visible = !editing;
+        // VariantDescriptionEdit.Visible = editing;
     }
     protected void OnAddIngredientButtonPressed()
     {
@@ -87,6 +99,7 @@ public partial class VariantDisplay : Control
         item.SetSelectable(1, true);
         item.SetEditable(2, true);
         item.SetSelectable(2, true);
+        item.SetMetadata(2, 0);
         item.AddButton(2, RemoveIngredient);
     }
 
@@ -95,6 +108,37 @@ public partial class VariantDisplay : Control
         item.Free();
     }
 
+    protected void OnAddRecipeLinkButtonPressed() 
+    {
+        foreach (RecipeData recipe in App.recipeBook.recipeData.Values)
+        {
+            var item = rootRecipeList.CreateChild();
+            item.SetText(0, recipe.recipeName);
+            item.SetSelectable(0, true);
+            item.SetMetadata(0, recipe);
+        }
+        AddRecipeLinkConfirmationDialog.Popup();
+    }
+
+    protected void OnRecipeListItemSelected()
+    {
+        var item = RecipeList.GetSelected();
+        selectedRecipe = (RecipeData)item.GetMetadata(0);
+    }
+    protected void OnAddRecipeLinkConfirmed()
+    {
+        var item = root.CreateChild();
+        item.SetEditable(0, true);
+        item.SetText(0, "1");
+        item.SetCellMode(1, TreeItem.TreeCellMode.Range);
+        item.SetEditable(1, true);
+        item.SetText(1, UnitOptions);
+        item.SetSelectable(1, true);
+        item.SetText(2, selectedRecipe.recipeName);
+        item.SetSelectable(2, true);
+        item.AddButton(2, RemoveIngredient);
+        item.SetMetadata(2, selectedRecipe.recipeID);
+    }
     protected void CreateIngredient(IngredientData ingredient)
     {
         var item = root.CreateChild();
@@ -106,8 +150,10 @@ public partial class VariantDisplay : Control
         item.SetSelectable(1, false);
         item.SetMetadata(1, (int)ingredient.unit);
         item.SetText(2, ingredient.ingredientName);
-        item.SetSelectable(2, false);
+        // item.SetSelectable(2, false);
+        item.SetMetadata(2,ingredient.recipeID);
     }
+
 
     public void CancelEditMode(bool editing)
     {
@@ -160,6 +206,7 @@ public partial class VariantDisplay : Control
             bool isFloat = item.GetText(0).IsValidFloat();
             if (editModeActive)
             {
+                eventBus.EmitSignal("QuantityTextFieldEdited", isFloat);
                 if (!isFloat)
                 {
                     if (item.GetText(0) != "")
@@ -170,7 +217,7 @@ public partial class VariantDisplay : Control
                     }
                 }
                 else
-                
+
                 {
                     item.ClearCustomBgColor(0);
                 }
@@ -178,6 +225,20 @@ public partial class VariantDisplay : Control
             else
             {
                 CalculateQuantity(isFloat, item);
+            }
+        }
+        if (IngredientList.GetSelectedColumn() == 2)
+        {
+            if (!editModeActive)
+            {
+                if ((int)item.GetMetadata(2) > 0)
+                {
+                    if (App.recipeBook.recipeData.ContainsKey((int)IngredientList.GetSelected().GetMetadata(2)))
+                    {
+                        selectedRecipe = App.recipeBook.recipeData[(int)IngredientList.GetSelected().GetMetadata(2)];
+                        eventBus.EmitSignal(EventBus.SignalName.RecipeOpened, selectedRecipe, false, false);
+                    }
+                }
             }
         }
     }
@@ -213,12 +274,9 @@ public partial class VariantDisplay : Control
             ingredientData.baseQuantity = ingredient.GetText(0).ToFloat();
             ingredientData.unit = (GlobalTypes.Unit)ingredient.GetRange(1);
             ingredientData.ingredientName = ingredient.GetText(2);
+            ingredientData.recipeID = (int)ingredient.GetMetadata(2);
             variantData.ingredients.Add(ingredientData);
         }
         return variantData;
-
-        //get variant name, description, etc. from edit
-        //update variantData
-        //return variantData
     }
 }

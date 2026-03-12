@@ -1,11 +1,12 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 
 public partial class RecipeDisplay : Control
 {
-    [Export] Label RecipeNameLabel;
+    // [Export] Label RecipeNameLabel;
     [Export] HFlowContainer TagContainer;
     [Export] MenuButton OptionsButton;
     [Export] TabContainer VariantContainer;
@@ -26,6 +27,7 @@ public partial class RecipeDisplay : Control
     [Export] ConfirmationDialog DeleteRecipeConfirmationDialog;
     [Export] ConfirmationDialog SaveRecipeConfirmationDialog;
     [Export] ConfirmationDialog CancelEditConfirmationDialog;
+    [Export] FileDialog ExportRecipeFileDialog;
 
     protected HashSet<GlobalTypes.Tag> TagSelection = new HashSet<GlobalTypes.Tag> { };
 
@@ -40,11 +42,11 @@ public partial class RecipeDisplay : Control
 
     protected bool newRecipe;
 
-
     public override void _Ready()
     {
         OptionsButton.GetPopup().Connect("id_pressed", new Callable(this, MethodName.OnItemSelected));
         eventBus = GetNode<EventBus>("/root/EventBus");
+        TitleEdit.Editable = false;
         TagSelector.GetPopup().HideOnCheckableItemSelection = false;
         foreach (GlobalTypes.Tag tag in GlobalTypes.Tags.Keys)
         {
@@ -70,7 +72,7 @@ public partial class RecipeDisplay : Control
     public void Init(RecipeData recipeData)
     {
         this.recipeData = recipeData;
-        RecipeNameLabel.Text = recipeData.recipeName;
+        TitleEdit.Text = recipeData.recipeName;
         foreach (GlobalTypes.Tag tag in recipeData.tags)
         {
             int index = TagSelector.GetPopup().GetItemIndex((int)tag);
@@ -87,6 +89,11 @@ public partial class RecipeDisplay : Control
             {
                 TagSelection.Remove(tag);
             }
+        }
+        if (recipeData.variants.Count == 0)
+        {
+            var newVariant = new VariantData();
+            CreateVariantTab(newVariant);
         }
         foreach (VariantData variant in recipeData.variants)
         {
@@ -112,6 +119,7 @@ public partial class RecipeDisplay : Control
                 break;
             case 2:
                 GD.Print("Export");
+                ExportRecipeFileDialog.Popup();
                 break;
             default:
                 return;
@@ -123,7 +131,7 @@ public partial class RecipeDisplay : Control
         VariantContainer.GetTabBar().TabCloseDisplayPolicy = TabBar.CloseButtonDisplayPolicy.ShowActiveOnly;
         editModeActive = editing;
         SetEditModeLayout(editing);
-        TitleEdit.Text = recipeData.recipeName;
+        TitleEdit.Editable = editing;
         DescriptionEdit.Text = recipeData.description;
         VariantContainer.SetTabHidden(VariantContainer.GetChildCount() - 1, false);
         foreach (Node variantDisplay in VariantContainer.GetChildren())
@@ -139,10 +147,10 @@ public partial class RecipeDisplay : Control
     protected void SetEditModeLayout(bool editing)
     {
         CloseRecipeButton.Visible = !editing;
-        RecipeNameLabel.Visible = !editing;
+        // RecipeNameLabel.Visible = !editing;
         OptionsButton.Visible = !editing;
         CancelEditButton.Visible = editing;
-        TitleEdit.Visible = editing;
+        // TitleEdit.Visible = editing;
         ResetEditButton.Visible = editing;
         SaveEditButton.Visible = editing;
         TagContainer.Visible = !editing;
@@ -293,7 +301,7 @@ public partial class RecipeDisplay : Control
         newRecipe = false;
         recipeData.recipeName = TitleEdit.GetText();
         recipeData.description = DescriptionEdit.GetText();
-        recipeData.lastEdited = (int)DateTime.Now.Ticks;
+        recipeData.lastEdited = DateTime.Now.Ticks;
         recipeData.tags.Clear();
         for (int item = 0; item < TagSelector.GetItemCount(); item++)
         {
@@ -313,7 +321,7 @@ public partial class RecipeDisplay : Control
         }
         eventBus.EmitSignal("DataDisplayChangeRequested", recipeData);
         eventBus.EmitSignal("SaveRequested");
-        OnCancelEditButtonPressed();
+        OnCancelEditConfirmed();
     }
 
     protected void OnDataDisplayChangeRequested(RecipeData recipeData)
@@ -348,5 +356,17 @@ public partial class RecipeDisplay : Control
     {
         eventBus.EmitSignal(EventBus.SignalName.DeleteRecipeRequested, recipeData.recipeID);
         eventBus.EmitSignal(EventBus.SignalName.RecipeClosed);
+    }
+
+    protected void OnRecipeExportConfirmed(string path)
+    {
+        if (!path.EndsWith(".rb"))
+        {
+            path += ".rb";
+        }
+        RecipeBookData exportRecipeBook = new();
+        exportRecipeBook.recipeData = [];
+        exportRecipeBook.AddRecipe(recipeData);
+        ResourceSaver.Save(exportRecipeBook, path);
     }
 }

@@ -4,10 +4,6 @@ using System;
 [GlobalClass]
 public partial class EventBus : Node
 {
-
-    [Signal]
-    public delegate void TestEventHandler();
-
     [Signal]
     public delegate void RecipeClosedEventHandler();
 

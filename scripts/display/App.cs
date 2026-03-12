@@ -4,10 +4,10 @@ using System;
 public partial class App : VSplitContainer
 {
 
-    protected EventBus eventBus;
-
     [Export] protected TabContainer TabContentContainer;
     public PackedScene RecipeScene = GD.Load<PackedScene>("uid://cqpd148u0ridy");
+    public static RecipeBookData recipeBook;
+    protected EventBus eventBus;
 
     public override void _Ready()
     {

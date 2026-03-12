@@ -5,7 +5,7 @@ using System.Linq;
 [GlobalClass]
 public partial class RecipeBookData : Resource
 {
-    [Export] public Godot.Collections.Dictionary<int, RecipeData> recipeData;
+    [Export] public Godot.Collections.Dictionary<long, RecipeData> recipeData;
 
     public void AddRecipe(RecipeData data)
     {
